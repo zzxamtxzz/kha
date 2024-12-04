@@ -1,0 +1,5 @@
+.custom-blur {
+  cursor: not-allowed;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
