@@ -4,7 +4,7 @@ import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
 class Visitor extends Model {
-  public _id!: string;
+  public id!: string;
   public user!: User;
   public userId!: number;
   public isPublic!: boolean;
@@ -18,7 +18,7 @@ class Visitor extends Model {
 
 Visitor.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -33,7 +33,7 @@ Visitor.init(
       allowNull: true,
       references: {
         model: "users", // Assumes you have an Employee model
-        key: "_id",
+        key: "id",
       },
     },
   },

@@ -75,7 +75,7 @@ const RegisterForm = () => {
   const { pending } = useFormStatus();
 
   return (
-    <div className="w-full h-full px-4 center">
+    <div className="w-screen h-screen px-4 flex items-center justify-center">
       <Card className="w-full max-w-[600px] mx-auto shadow-md cart-bg">
         <CardHeader>
           <div className="w-full flex flex-col gap-y-4 items-center justify-center">

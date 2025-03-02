@@ -32,17 +32,17 @@ export async function login(state: any, formData: FormData) {
       if (!match) return { error: "invalid credential!" };
     }
 
-    const token = generateToken(user._id.toString());
-    const refreshToken = generateRefreshToken(user._id.toString());
+    const token = generateToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
     const expires = new Date(Date.now() + cookie.duration);
     const sessionData = { token, refreshToken };
     const session = await Session.create({
       expires,
       session: sessionData,
-      user: user._id,
+      user: user.id,
     });
 
-    await createSession(session._id.toString());
+    await createSession(session.id);
   } catch (error) {
     return console.log("error", error);
   }

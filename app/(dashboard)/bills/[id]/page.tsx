@@ -7,7 +7,7 @@ import BillDetailHeader from "./header";
 
 async function BillDetail({ params }: { params: { id: string } }) {
   const bill = await BillModel.findByPk(params.id, {
-    include: { model: User, as: "createdBy", attributes: ["_id", "email"] },
+    include: { model: User, as: "createdBy", attributes: ["id", "email"] },
   });
 
   if (!bill) notFound();
@@ -15,7 +15,7 @@ async function BillDetail({ params }: { params: { id: string } }) {
   return (
     <div className="w-full overflow-y-auto h-full p-4">
       <Card className="max-w-[700px] min-h-full h-auto mx-auto p-0 w-full">
-        <BillDetailHeader data={bill._id.toString()} />
+        <BillDetailHeader data={bill.id.toString()} />
         <CardContent className="p-4">
           <DefaultDataShow data={JSON.stringify(bill)} />
         </CardContent>

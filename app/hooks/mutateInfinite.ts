@@ -6,7 +6,7 @@ type UpdateDataType<T> = T & {
   remove?: true;
 };
 
-export function useMutateInfiniteData<T extends { _id: string }>() {
+export function useMutateInfiniteData<T extends { id: string }>() {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: async (data: UpdateDataType<T>) => data,
@@ -24,11 +24,11 @@ export function useMutateInfiniteData<T extends { _id: string }>() {
             )
           : data.remove
           ? infiniteData.pages.map((page) =>
-              page.filter((s) => s._id !== data._id)
+              page.filter((s) => s.id !== data.id)
             )
           : infiniteData.pages.map((page) =>
               page.map((s) =>
-                s._id.toString() === data._id.toString() ? data : s
+                s.id.toString() === data.id.toString() ? data : s
               )
             ),
       };

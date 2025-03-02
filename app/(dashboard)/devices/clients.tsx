@@ -28,10 +28,10 @@ function FilterByClientBtn() {
   });
 
   const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId");
+  const client_id = searchParams.get("client_id");
   const router = useRouter();
 
-  const client = clients.find((c) => c._id.toString() == clientId);
+  const client = clients.find((c) => c.id.toString() == client_id);
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -51,17 +51,17 @@ function FilterByClientBtn() {
           className="justify-start"
           onClick={() => {
             const currentParams = new URLSearchParams(searchParams);
-            currentParams.delete("clientId");
+            currentParams.delete("client_id");
             router.push(`?${currentParams.toString()}`);
           }}
         >
           All
         </Button>
         {clients.map((client, index) => {
-          const choose = clientId === client._id.toString();
+          const choose = client_id === client.id.toString();
           return (
             <Link
-              href={`?clientId=${client._id}`}
+              href={`?client_id=${client.id}`}
               key={index}
               className="p-2 rounded-sm hover flex w-[150px] items-center justify-between"
             >

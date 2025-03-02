@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
       kitNo: i.kitNo,
       serviceFee: i.serviceFee,
       remark: i.remark,
-      clientId: i.clientId || client?._id,
-      createdById: user._id,
+      client_id: i.client_id || client?.id,
+      created_by_id: user.id,
       ref: `Bulk create by ${user.name}`,
     };
   });
@@ -36,11 +36,11 @@ export async function POST(request: NextRequest) {
   try {
     await Promise.all(
       data.map(async (device) => {
-        const { _id } = device;
+        const { id } = device;
         let exist = null;
-        if (_id) {
+        if (id) {
           exist = await DeviceModel.findOne({
-            where: { _id },
+            where: { id },
           });
         }
         if (exist) {
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 //   const clients = await Client.findAll();
 
 //   const data = body.map((i) => {
-//     const client = clients.find((c) => c._id === i.client);
+//     const client = clients.find((c) => c.id === i.client);
 //     return {
 //       email: i.email,
 //       name: i.name,
@@ -76,8 +76,8 @@ export async function POST(request: NextRequest) {
 //       kitNo: i.kitNo,
 //       serviceFee: i.serviceFee,
 //       remark: i.remark,
-//       clientId: client?._id,
-//       createdById: user._id,
+//       client_id: client?.id,
+//       created_by_id: user.id,
 //     };
 //   });
 

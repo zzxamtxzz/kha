@@ -4,22 +4,21 @@ import { DataTypes, Model } from "sequelize";
 import Client from "./client";
 
 class User extends Model {
-  public _id!: string;
+  public id!: string;
   public name!: string;
   public role!: "admin" | "user";
   public email!: string;
   public password!: string; // Add this line
   public profile!: any; // Add this line
-
   public active!: boolean;
   public isPublic!: boolean;
-  public clientId!: string;
+  public client_id!: string;
   public client!: Client;
 }
 
 User.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -31,14 +30,13 @@ User.init(
       allowNull: false,
       defaultValue: "user",
     },
-
     email: { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     active: { type: DataTypes.BOOLEAN, defaultValue: true },
     isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
-    clientId: {
+    client_id: {
       type: DataTypes.UUID,
-      references: { model: "clients", key: "_id" },
+      references: { model: "clients", key: "id" },
     },
   },
   {
@@ -46,6 +44,8 @@ User.init(
     modelName: "User",
     tableName: "users",
     freezeTableName: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     defaultScope: {
       attributes: { exclude: ["password"] },
     },
@@ -57,8 +57,8 @@ User.init(
   }
 );
 
-User.belongsTo(Client, { foreignKey: "clientId", as: "client" }); // Add this line
-Client.hasOne(User, { foreignKey: "clientId", as: "user" }); // Add this line
-Client.belongsTo(User, { foreignKey: "createdById", as: "createdBy" });
+User.belongsTo(Client, { foreignKey: "client_id", as: "client" }); // Add this line
+Client.hasOne(User, { foreignKey: "client_id", as: "user" }); // Add this line
+Client.belongsTo(User, { foreignKey: "created_by_id", as: "createdBy" });
 
 export default User;

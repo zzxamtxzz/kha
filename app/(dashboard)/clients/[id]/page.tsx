@@ -11,14 +11,14 @@ import ClientDetailHeader from "./header";
 
 async function ClientDetail({ params }: { params: { id: string } }) {
   const client = await Client.findByPk(params.id, {
-    include: { model: User, as: "createdBy", attributes: ["_id", "email"] },
+    include: { model: User, as: "createdBy", attributes: ["id", "email"] },
   });
 
   if (!client) return notFound();
 
   const devices = await DeviceModel.findAll({
-    where: { clientId: client._id },
-    attributes: ["_id", "email"],
+    where: { client_id: client.id },
+    attributes: ["id", "email"],
   });
 
   return (
@@ -30,7 +30,7 @@ async function ClientDetail({ params }: { params: { id: string } }) {
             className={cn(
               buttonVariants({ variant: "outline", className: "mb-2" })
             )}
-            href={`/devices/create?clientId=${client._id}`}
+            href={`/devices/create?client_id=${client.id}`}
           >
             Add New Device
           </Link>

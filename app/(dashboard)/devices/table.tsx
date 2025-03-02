@@ -1,4 +1,5 @@
 "use client";
+import { useHasUser } from "@/app/contexts/user";
 import DynamicTable, { ColumnType } from "@/components/table/page";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,12 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import DeviceModel from "@/models/devices";
+import { actions, ADMIN, roles } from "@/roles";
 import dayjs from "dayjs";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import ChooseClients from "./choose";
-import { useHasUser } from "@/app/contexts/user";
-import { actions, ADMIN, roles } from "@/roles";
 
 function DevicesClientTable({
   devices: d,
@@ -44,8 +44,8 @@ function DevicesClientTable({
       },
     },
     {
-      name: "name",
-      cell: ({ lastBill, _id, name }) => {
+      name: "email",
+      cell: ({ lastBill, id, email }) => {
         const billingDate = dayjs(lastBill?.billingDate);
         const expirationDate = billingDate.add(
           lastBill?.durationMonth,
@@ -62,13 +62,13 @@ function DevicesClientTable({
 
         return (
           <Link
-            href={`/devices/${_id}`}
+            href={`/devices/${id}`}
             className={cn(
               "hover:underline px-2 font-semibold",
               expired ? "text-red-500" : ""
             )}
           >
-            {name}{" "}
+            {email}{" "}
             {lastBill &&
               (expired ? (
                 <sup>
@@ -90,20 +90,19 @@ function DevicesClientTable({
         );
       },
     },
-    {
-      name: "email",
-      cell: ({ email, _id }) => {
-        return (
-          <Link href={`/devices/${_id}`} className="hover:underline px-2">
-            {email}
-          </Link>
-        );
-      },
-    },
+    // {
+    //   name: "email",
+    //   cell: ({ email, id }) => {
+    //     return (
+    //       <Link href={`/devices/${id}`} className="hover:underline px-2">
+    //         {email}
+    //       </Link>
+    //     );
+    //   },
+    // },
     { name: "deviceSerial" },
     { name: "accNo" },
     { name: "kitNo" },
-    { name: "serviceFee" },
     {
       name: "client",
       cell: (device) => (
@@ -134,7 +133,7 @@ function DevicesClientTable({
           : columns),
         {
           id: "action",
-          cell: ({ _id }) => {
+          cell: ({ id }) => {
             return (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -146,23 +145,23 @@ function DevicesClientTable({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
-                    onClick={() => navigator.clipboard.writeText(_id)}
+                    onClick={() => navigator.clipboard.writeText(id)}
                   >
                     Copy payment ID
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/bills/create?deviceId=${_id}`}>
+                    <Link href={`/bills/create?deviceId=${id}`}>
                       Create Bill
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href={`/devices/${_id}`}>View device</Link>
+                    <Link href={`/devices/${id}`}>View device</Link>
                   </DropdownMenuItem>
                   {(ADMIN === user.role ||
                     foundRole?.devices.includes(actions.UPDATE)) && (
                     <DropdownMenuItem asChild>
-                      <Link href={`/devices/create?edit=${_id}`}>
+                      <Link href={`/devices/create?edit=${id}`}>
                         Edit devices
                       </Link>
                     </DropdownMenuItem>

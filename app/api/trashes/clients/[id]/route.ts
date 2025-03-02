@@ -15,7 +15,7 @@ export async function PUT(
     return Response.json({ error: "Data not found" }, { status: 404 });
 
   await update.update({ isPublic: false });
-  await Client.update({ isPublic: true }, { where: { _id: update.contentId } });
+  await Client.update({ isPublic: true }, { where: { id: update.contentId } });
 
   return Response.json({ message: "success" });
 }

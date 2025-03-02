@@ -17,7 +17,7 @@ export async function DELETE(request: NextRequest) {
   const all = params.get("all");
 
   try {
-    let where: any = { _id: { [Op.in]: devices.map(Number) } };
+    let where: any = { id: { [Op.in]: devices.map(Number) } };
     if (all === "true") where = {};
     await DeviceModel.update({ isPublic: false }, { where });
     const deviceRecords = await DeviceModel.findAll({ where });
@@ -27,9 +27,9 @@ export async function DELETE(request: NextRequest) {
     for (const device of deviceRecords) {
       await saveRemoveData({
         title: "Device",
-        contentId: device._id,
+        contentId: device.id,
         fromModel: "devices",
-        userId: user._id,
+        userId: user.id,
       });
     }
 

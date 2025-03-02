@@ -7,11 +7,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { CircleX, Trash } from "lucide-react";
 import { useState } from "react";
-import { toSkip } from "../exports/action";
 import SpinLoading from "../loadings/spinloading";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import CustomColumnTable from "./columns";
+import CustomTableColumn from "./columns";
 
 export type ColumnType<T> = {
   name?: string;
@@ -30,14 +29,16 @@ export type TableType<T> = {
   skip?: (keyof T)[];
   className?: string;
   loading?: boolean;
+  columnNames?: string[];
 };
 
-function DynamicTable<T extends { _id: string; name?: string }>({
+function DynamicTable<T extends { id: string; name?: string }>({
   data,
   columns: ac = [],
   lastElementRef,
   title,
   skip = [],
+  columnNames,
   className,
   loading,
 }: TableType<T>) {
@@ -84,8 +85,8 @@ function DynamicTable<T extends { _id: string; name?: string }>({
                     params: { devices: checks, all: checkedAll },
                   });
                   queryKeys.forEach((queryKey) => {
-                    checks.map((_id) =>
-                      updateData({ queryKey, _id, remove: true })
+                    checks.map((id) =>
+                      updateData({ queryKey, id, remove: true })
                     );
                   });
                   toast({ title: "Success", description: "Delete successful" });
@@ -105,11 +106,9 @@ function DynamicTable<T extends { _id: string; name?: string }>({
         </div>
       )}
       <div className="absolute right-0 top-2">
-        <CustomColumnTable
+        <CustomTableColumn
           title={title}
-          columns={ac.filter(
-            (c) => c.name && ![...toSkip, ...skip].includes(c.name)
-          )}
+          columns={columnNames || []}
           currentColumns={currentColumns}
           setCurrentColumns={setCurrentColumns}
         />
@@ -140,54 +139,57 @@ function DynamicTable<T extends { _id: string; name?: string }>({
           </tr>
         </thead>
         <tbody className="[&_tr:last-child]:border-0">
-          {data.map((d, index) => (
-            <tr
-              key={index}
-              ref={index === data.length - 1 ? lastElementRef : null}
-              className={
-                "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted hover"
-              }
-            >
-              <td className="px-4">
-                <Checkbox
-                  checked={checkedAll || checks.includes(d._id)}
-                  onCheckedChange={(checked) => {
-                    setChecks((prev) =>
-                      !checked
-                        ? prev.filter((p) => p !== d._id)
-                        : [...prev, d._id]
-                    );
-                  }}
-                />
-              </td>
-              {currentColumns.map((column, dataindex) => {
-                const name = column.name;
-                //@ts-ignore
-                const item: any = d[name];
+          {data.map((d, index) => {
+            if (!d) return null;
+            return (
+              <tr
+                key={index}
+                ref={index === data.length - 1 ? lastElementRef : null}
+                className={
+                  "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted hover"
+                }
+              >
+                <td className="px-4">
+                  <Checkbox
+                    checked={checkedAll || checks.includes(d?.id)}
+                    onCheckedChange={(checked) => {
+                      setChecks((prev) =>
+                        !checked
+                          ? prev.filter((p) => p !== d.id)
+                          : [...prev, d.id]
+                      );
+                    }}
+                  />
+                </td>
+                {currentColumns.map((column, dataindex) => {
+                  const name = column.name;
+                  //@ts-ignore
+                  const item: any = d[name];
 
-                return (
-                  <td
-                    key={dataindex}
-                    className="p-4 align-middle [&:has([role=checkbox])]:pr-0"
-                  >
-                    {column.cell
-                      ? column.cell({ index, ...d, value: item })
-                      : typeof item === "object"
-                      ? item?.name || item?.email
-                      : typeof item === "boolean"
-                      ? JSON.stringify(item)
-                      : column.name &&
-                        (column.name.toLowerCase().includes("date") ||
-                          column.name.toLowerCase().includes("at"))
-                      ? dayjs(item).format("YYYY-MM-DD")
-                      : typeof item === "number"
-                      ? Number(item.toFixed(2)).toLocaleString("en-us")
-                      : item}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+                  return (
+                    <td
+                      key={dataindex}
+                      className="p-4 align-middle [&:has([role=checkbox])]:pr-0"
+                    >
+                      {column.cell
+                        ? column.cell({ index, ...d, value: item })
+                        : typeof item === "object"
+                        ? item?.name || item?.email
+                        : typeof item === "boolean"
+                        ? JSON.stringify(item)
+                        : column.name &&
+                          (column.name.toLowerCase().includes("date") ||
+                            column.name.toLowerCase().includes("at"))
+                        ? dayjs(item).format("YYYY-MM-DD")
+                        : typeof item === "number"
+                        ? Number(item.toFixed(2)).toLocaleString("en-us")
+                        : item}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       {!loading && data.length <= 0 && (

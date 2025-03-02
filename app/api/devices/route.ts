@@ -76,9 +76,9 @@ export async function GET(request: NextRequest) {
     ];
   }
 
-  const devices = await DeviceModel.findAll(query);
+  const { count, rows } = await DeviceModel.findAndCountAll(query);
 
-  return Response.json(devices);
+  return Response.json({ total: count, data: rows });
 }
 
 export async function POST(request: NextRequest) {
@@ -88,10 +88,10 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   const {
-    _id,
+    id,
     email,
     name,
-    clientId,
+    client_id,
     deviceSerial,
     accNo,
     kitNo,
@@ -111,9 +111,9 @@ export async function POST(request: NextRequest) {
 
   try {
     let exist = null;
-    if (_id)
+    if (id)
       exist = await DeviceModel.findOne({
-        where: { _id },
+        where: { id },
         include,
       });
 
@@ -121,26 +121,26 @@ export async function POST(request: NextRequest) {
     if (exist) {
       newClient = await exist.update({
         name,
-        clientId: Number(clientId),
+        client_id: Number(client_id),
         deviceSerial,
         accNo,
         kitNo,
         serviceFee: Number(serviceFee),
         remark,
-        createdById: user._id,
+        created_by_id: user.id,
       });
     } else {
       newClient = await DeviceModel.create(
         {
           email,
           name,
-          clientId: Number(clientId),
+          client_id: Number(client_id),
           deviceSerial,
           accNo,
           kitNo,
           serviceFee: Number(serviceFee),
           remark,
-          createdById: user._id,
+          created_by_id: user.id,
         },
         { include }
       );

@@ -13,14 +13,14 @@ import ClientDetailHeader from "./header";
 async function DeviceDetailPage({ params }: { params: { id: string } }) {
   const device = await DeviceModel.findByPk(params.id, {
     include: [
-      { model: User, as: "createdBy", attributes: ["_id", "email"] },
+      { model: User, as: "createdBy", attributes: ["id", "email"] },
       { model: BillModel, as: "lastBill" },
     ],
   });
 
   if (!device) notFound();
 
-  const bills = await BillModel.findAll({ where: { deviceId: device._id } });
+  const bills = await BillModel.findAll({ where: { deviceId: device.id } });
   return (
     <div className="w-full h-full p-8">
       <Card className="max-w-[700px] mx-auto p-0 w-full min-h-full">
@@ -35,7 +35,7 @@ async function DeviceDetailPage({ params }: { params: { id: string } }) {
             Create Bill
           </Link>
           <DefaultDataShow
-            toSkip={["lastBill", "_id"]}
+            toSkip={["lastBill", "id"]}
             data={JSON.stringify(device)}
           />
           <p className="font-bold text-lg">Last bill record</p>

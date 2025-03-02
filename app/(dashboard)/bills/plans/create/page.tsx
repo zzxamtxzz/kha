@@ -16,7 +16,7 @@ async function CreatePlan({
   if (ADMIN !== user.role && !foundRole?.plans.includes(actions.CREATE))
     return notFound();
 
-  const clients = await Client.findAll({ attributes: ["name", "_id"] });
+  const clients = await Client.findAll({ attributes: ["name", "id"] });
 
   const edit = searchParams.edit as string;
   let data;

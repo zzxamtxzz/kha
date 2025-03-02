@@ -1,4 +1,4 @@
-import ClientDetail from "@/app/(dashboard)/clients/[id]/page";
+import ClientDetail from "@/app/dashboard/clients/[id]/page";
 import { Modal } from "@/components/shared/modal";
 
 function ClientDetailModal({ params }: { params: { id: string } }) {

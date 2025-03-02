@@ -6,7 +6,7 @@ import DeviceModel from "./devices";
 import User from "./user";
 
 class BillModel extends Model {
-  public _id!: string;
+  public id!: string;
   public amount!: number;
   public serviceFee!: number;
   public durationMonth!: number;
@@ -17,13 +17,13 @@ class BillModel extends Model {
   public deviceId!: string;
   public planId!: string;
   public plan!: PlanModel;
-  public createdById!: string;
+  public created_by_id!: string;
   public isPublic!: boolean;
 }
 
 BillModel.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -36,11 +36,11 @@ BillModel.init(
     isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
     deviceId: {
       type: DataTypes.UUID,
-      references: { model: "devices", key: "_id" },
+      references: { model: "devices", key: "id" },
     },
-    createdById: {
+    created_by_id: {
       type: DataTypes.UUID,
-      references: { model: User, key: "_id" },
+      references: { model: User, key: "id" },
     },
   },
   {
@@ -51,7 +51,7 @@ BillModel.init(
   }
 );
 
-BillModel.belongsTo(User, { foreignKey: "createdById", as: "createdBy" });
+BillModel.belongsTo(User, { foreignKey: "created_by_id", as: "createdBy" });
 BillModel.belongsTo(PlanModel, { foreignKey: "planId", as: "plan" });
 
 export default BillModel;

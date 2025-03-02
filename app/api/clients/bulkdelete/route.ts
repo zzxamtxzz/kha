@@ -18,7 +18,7 @@ export async function DELETE(request: NextRequest) {
   const all = params.get("all");
 
   try {
-    let where: any = { _id: { [Op.in]: clients.map(Number) } };
+    let where: any = { id: { [Op.in]: clients.map(Number) } };
     if (all === "true") where = {};
     await Client.update({ isPublic: false }, { where });
     const clientRecords = await Client.findAll({ where });
@@ -26,9 +26,9 @@ export async function DELETE(request: NextRequest) {
     for (const client of clientRecords) {
       await saveRemoveData({
         title: "Client",
-        contentId: client._id,
+        contentId: client.id,
         fromModel: "clients",
-        userId: user._id,
+        userId: user.id,
       });
     }
 

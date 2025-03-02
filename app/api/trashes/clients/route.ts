@@ -11,12 +11,12 @@ export async function GET(request: NextRequest) {
         {
           model: Client,
           as: "client",
-          attributes: ["_id", "_id", "name", "email"],
+          attributes: ["id", "id", "name", "email"],
         },
         {
           model: User,
           as: "user",
-          attributes: ["_id", "_id", "name", "email"],
+          attributes: ["id", "id", "name", "email"],
         },
       ],
     });

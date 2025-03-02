@@ -32,7 +32,7 @@ const CreateBillClient = ({
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    deviceId: device._id,
+    deviceId: device.id,
     billingDate: "",
     planId: "",
     durationMonth: "",
@@ -80,7 +80,7 @@ const CreateBillClient = ({
     }
   };
 
-  const selectPlan = plans.find((c) => c._id.toString() == formData.planId);
+  const selectPlan = plans.find((c) => c.id.toString() == formData.planId);
 
   return (
     <div className="w-full h-screen overflow-y-auto p-4 center">
@@ -100,7 +100,7 @@ const CreateBillClient = ({
             <X className="w-4" />
           </Button>
         </div>
-        <Label className="font-semibold capitalize" htmlFor="clientId">
+        <Label className="font-semibold capitalize" htmlFor="client_id">
           Plan
         </Label>
         <Select
@@ -116,7 +116,7 @@ const CreateBillClient = ({
             <Label className="font-bold">Choose Plan</Label>
             {plans.map((plan, index) => {
               return (
-                <SelectItem key={index} value={plan._id.toString()}>
+                <SelectItem key={index} value={plan.id.toString()}>
                   * {plan.name}
                 </SelectItem>
               );

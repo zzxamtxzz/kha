@@ -30,11 +30,11 @@ const CreateDeviceClient = ({
   const edit = JSON.parse(e);
   const clients = JSON.parse(c) as Client[];
   const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId");
+  const client_id = searchParams.get("client_id");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    clientId,
+    client_id,
     name: "",
     serviceFee: "",
     deviceSerial: "",
@@ -87,7 +87,7 @@ const CreateDeviceClient = ({
     }
   };
 
-  const select = clients.find((c) => c._id.toString() == formData.clientId);
+  const select = clients.find((c) => c.id.toString() == formData.client_id);
 
   return (
     <div className="w-full h-full p-4 center">
@@ -127,16 +127,16 @@ const CreateDeviceClient = ({
           value={formData.name}
           required
         />
-        {!clientId && (
+        {!client_id && (
           <>
-            <Label className="font-semibold capitalize" htmlFor="clientId">
+            <Label className="font-semibold capitalize" htmlFor="client_id">
               Client
             </Label>
             <Select
               onValueChange={(value) => {
-                setFormData((prev: any) => ({ ...prev, clientId: value }));
+                setFormData((prev: any) => ({ ...prev, client_id: value }));
               }}
-              name="clientId"
+              name="client_id"
             >
               <SelectTrigger>
                 {select ? select.name : "Choose Client"}
@@ -146,7 +146,7 @@ const CreateDeviceClient = ({
                   <SelectLabel>Choose Device</SelectLabel>
                   {clients.map((client, index) => {
                     return (
-                      <SelectItem key={index} value={client._id.toString()}>
+                      <SelectItem key={index} value={client.id.toString()}>
                         {client.name}
                       </SelectItem>
                     );

@@ -13,7 +13,7 @@ async function Clients({
   const state = cookies().get("/clientsstate")?.value;
 
   let saveColumns = await TableColumn.findOne({
-    where: { user: user._id, title: "clients" },
+    where: { user: user.id, title: "clients" },
   });
   return (
     <ClientsClient

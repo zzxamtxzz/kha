@@ -3,11 +3,11 @@ import axios from "@/axios";
 import DynamicTable from "@/components/table/page";
 import { buttonVariants } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -66,18 +66,18 @@ function UsersClient() {
           loading={loading}
           data={users}
           columns={[
-            { name: "_id" },
+            { name: "id" },
             { name: "profile" },
             { name: "name" },
             { name: "email" },
             {
               name: "role",
-              cell: ({ value, _id }) => {
+              cell: ({ value, id }) => {
                 return (
                   <Select
                     onValueChange={async (value) => {
                       try {
-                        const response = await axios.put(`/api/users/${_id}`, {
+                        const response = await axios.put(`/api/users/${id}`, {
                           role: value,
                         });
                         const existData = queryClient.getQueryData(
@@ -89,7 +89,7 @@ function UsersClient() {
                             ...existData,
                             pages: existData.pages.map((page) =>
                               page.map((d) =>
-                                d._id === _id ? { ...d, ...response.data } : d
+                                d.id === id ? { ...d, ...response.data } : d
                               )
                             ),
                           });
@@ -117,12 +117,12 @@ function UsersClient() {
             },
             {
               name: "active",
-              cell: ({ value, _id }) => {
+              cell: ({ value, id }) => {
                 return (
                   <Select
                     onValueChange={async (value) => {
                       try {
-                        const response = await axios.put(`/api/users/${_id}`, {
+                        const response = await axios.put(`/api/users/${id}`, {
                           active: value,
                         });
                         const existData = queryClient.getQueryData(
@@ -134,7 +134,7 @@ function UsersClient() {
                             ...existData,
                             pages: existData.pages.map((page) =>
                               page.map((d) =>
-                                d._id === _id ? { ...d, ...response.data } : d
+                                d.id === id ? { ...d, ...response.data } : d
                               )
                             ),
                           });

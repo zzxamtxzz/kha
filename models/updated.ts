@@ -4,7 +4,7 @@ import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
 class UpdateModel extends Model {
-  public _id!: string;
+  public id!: string;
   public user!: User;
   public userId!: number;
   public data!: any;
@@ -18,7 +18,7 @@ class UpdateModel extends Model {
 
 UpdateModel.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -33,7 +33,7 @@ UpdateModel.init(
       allowNull: true,
       references: {
         model: "users", // Assumes you have an Employee model
-        key: "_id",
+        key: "id",
       },
     },
   },

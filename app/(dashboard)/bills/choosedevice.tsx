@@ -1,4 +1,5 @@
 "use client";
+import { useInfiniteData } from "@/app/hooks/useInfiniteData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,7 +12,6 @@ import DeviceModel from "@/models/devices";
 import { CirclePlus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useInfiniteData } from "../../hooks/useInfiniteData";
 
 function CreateNewBill({
   className,
@@ -53,9 +53,10 @@ function CreateNewBill({
             className="my-2"
           />
           {data.map((device, index) => {
+            if (!device) return null;
             return (
               <Link
-                href={`/bills/create?deviceId=${device._id}`}
+                href={`/bills/create?deviceId=${device.id}`}
                 className="p-2 hover"
                 ref={index === data.length - 1 ? lastElementRef : null}
                 key={index}

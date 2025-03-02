@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       serviceFee: i.serviceFee,
       amountInPerMonth: i.amountInPerMonth,
       remark: i.remark,
-      createdById: user._id,
+      created_by_id: user.id,
     };
   });
 

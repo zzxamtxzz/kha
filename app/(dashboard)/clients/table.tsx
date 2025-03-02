@@ -48,20 +48,40 @@ function ClientTable({
       },
     },
     {
-      name: "name",
-      cell: ({ name, _id }) => {
+      name: "client_name",
+      cell: ({ name, id }) => {
         return (
-          <Link href={`/clients/${_id}`} className="hover:underline px-2">
+          <Link href={`/clients/${id}`} className="hover:underline px-2">
             {name}
           </Link>
         );
       },
     },
     {
-      name: "email",
-      cell: ({ email, _id }) => {
+      name: "first_name",
+      cell: ({ first_name, id }) => {
         return (
-          <Link href={`/clients/${_id}`} className="hover:underline px-2">
+          <Link href={`/clients/${id}`} className="hover:underline px-2">
+            {first_name}
+          </Link>
+        );
+      },
+    },
+    {
+      name: "last_name",
+      cell: ({ last_name, id }) => {
+        return (
+          <Link href={`/clients/${id}`} className="hover:underline px-2">
+            {last_name}
+          </Link>
+        );
+      },
+    },
+    {
+      name: "email",
+      cell: ({ email, id }) => {
+        return (
+          <Link href={`/clients/${id}`} className="hover:underline px-2">
             {email}
           </Link>
         );
@@ -75,7 +95,7 @@ function ClientTable({
     <DynamicTable<Client>
       className="flex h-full mt-2 mx-auto flex-wrap cart-bg shadow-m rounded-lg"
       loading={loading}
-      skip={["_id", "createdById"]}
+      skip={["id", "created_by_id"]}
       data={clients}
       columns={[
         ...(saveColumns.length
@@ -83,7 +103,7 @@ function ClientTable({
           : columns),
         {
           id: "action",
-          cell: ({ _id }) => {
+          cell: ({ id }) => {
             return (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -95,15 +115,13 @@ function ClientTable({
                 <DropdownMenuContent className="w-[250px]" align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem asChild>
-                    <Link href={`/devices/create?clientId=${_id}`}>
+                    <Link href={`/devices/create?client_id=${id}`}>
                       <Plus className="w-4" />
                       <span className="px-2">Add Device</span>
                     </Link>
                   </DropdownMenuItem>{" "}
                   <DropdownMenuItem
-                    onClick={() =>
-                      navigator.clipboard.writeText(_id.toString())
-                    }
+                    onClick={() => navigator.clipboard.writeText(id.toString())}
                   >
                     Copy client id
                   </DropdownMenuItem>
@@ -111,19 +129,19 @@ function ClientTable({
                   <DropdownMenuItem
                     className="text-red-500"
                     onClick={async () => {
-                      await axios.delete(`/api/clients/${_id}`);
+                      await axios.delete(`/api/clients/${id}`);
                       queryKeys.map((queryKey) =>
-                        updateData({ queryKey, _id, remove: true })
+                        updateData({ queryKey, id, remove: true })
                       );
                     }}
                   >
                     Delete
                   </DropdownMenuItem>{" "}
                   <DropdownMenuItem asChild>
-                    <Link href={`/clients/${_id}`}>View</Link>
+                    <Link href={`/clients/${id}`}>View</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href={`/clients/create?edit=${_id}`}>Edit</Link>
+                    <Link href={`/clients/create?edit=${id}`}>Edit</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -131,6 +149,7 @@ function ClientTable({
           },
         },
       ]}
+      columnNames={columns.map((c) => c.name)}
       lastElementRef={lastElementRef}
       title={"clients"}
     />

@@ -1,4 +1,5 @@
 "use client";
+import { useInfiniteData } from "@/app/hooks/useInfiniteData";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +13,6 @@ import DeviceModel from "@/models/devices";
 import { UserRoundPlus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useInfiniteData } from "../../hooks/useInfiniteData";
 import ListCartNavigation from "../_components/btn/listcart";
 import SearchInput from "../_components/input/search";
 import ClientExportBtn from "./exports";
@@ -32,17 +32,12 @@ function ClientsClient({
   const stateParam = searchParams.get("state");
   const state = (stateParam || s) as string;
 
-  const {
-    data: devices,
-    loading,
-    queryKey,
-    lastElementRef,
-    count,
-  } = useInfiniteData<DeviceModel>({
-    keys: "clients",
-    size: 20,
-    params: { search },
-  });
+  const { data, loading, queryKey, lastElementRef, count } =
+    useInfiniteData<DeviceModel>({
+      keys: "clients",
+      size: 20,
+      params: { search },
+    });
 
   return (
     <div className="h-full w-full overflow-y-auto">
@@ -74,7 +69,7 @@ function ClientsClient({
             saveColumns={saveColumns}
             lastElementRef={lastElementRef}
             loading={loading}
-            devices={JSON.stringify(devices)}
+            devices={JSON.stringify(data)}
             count={count}
           />
         ) : (
@@ -92,16 +87,16 @@ function ClientsClient({
                     </Card>
                   );
                 })
-              : devices.map((device, k) => {
+              : data.map((device, k) => {
                   return (
                     <Card
-                      ref={k === devices.length - 1 ? lastElementRef : null}
+                      ref={k === data.length - 1 ? lastElementRef : null}
                       key={k}
                     >
                       <CardHeader className="p-4">
                         <Link
                           className="hover:underline font-semibold"
-                          href={`/devices/${device._id}`}
+                          href={`/devices/${device.id}`}
                         >
                           {device.name || "no name"}
                         </Link>

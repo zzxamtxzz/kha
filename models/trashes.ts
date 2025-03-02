@@ -7,7 +7,7 @@ import DeviceModel from "./devices";
 import User from "./user";
 
 class TrashModel extends Model {
-  public _id!: string;
+  public id!: string;
   public user!: User;
   public userId!: number;
   public isPublic!: boolean;
@@ -23,7 +23,7 @@ class TrashModel extends Model {
 
 TrashModel.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -37,7 +37,7 @@ TrashModel.init(
       allowNull: true,
       references: {
         model: "users", // Assumes you have an Employee model
-        key: "_id",
+        key: "id",
       },
     },
   },

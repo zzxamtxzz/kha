@@ -13,7 +13,7 @@ export async function DELETE(
     await BillModel.update(
       { isPublic: false },
       {
-        where: { _id: params.id },
+        where: { id: params.id },
       }
     );
 

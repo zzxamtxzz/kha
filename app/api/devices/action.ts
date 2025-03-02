@@ -20,10 +20,10 @@ export const getDeviceQuery = ({
     ];
   }
 
-  if (client) where.clientId = client;
+  if (client) where.client_id = client;
 
   if (ADMIN !== user.role) {
-    where.clientId = user.clientId;
+    where.client_id = user.client_id;
   }
 
   return where;

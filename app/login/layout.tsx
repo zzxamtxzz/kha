@@ -14,7 +14,7 @@ export default async function RootLayout({
   return (
     <>
       <Image
-        src={"/starlink.jpg"}
+        src={"/home_b_hero_d.webp"}
         fill
         alt="background"
         className="object-cover"

@@ -14,19 +14,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
 
   const body = await request.json();
-  const { title, columns } = body;
+  const { title, column } = body;
 
   let response = await TableColumn.findOne({
-    where: { user: user._id, title: body.title },
+    where: { user: user.id, title: body.title },
   });
 
+  console.log("body", body);
+
   if (response) {
-    response = await response.update({ title, columns });
+    response = await response.update({ title, columns: column });
   } else {
     response = await TableColumn.create({
-      user: user._id,
+      user: user.id,
       title: body.title,
-      columns,
+      columns: column,
     });
   }
 

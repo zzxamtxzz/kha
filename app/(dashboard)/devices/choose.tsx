@@ -36,15 +36,15 @@ function ChooseClients({ device }: { device: DeviceModel }) {
     <Select
       onValueChange={async (value) => {
         try {
-          const response = await axios.put(`/api/devices/${device._id}`, {
-            clientId: value,
+          const response = await axios.put(`/api/devices/${device.id}`, {
+            client_id: value,
           });
 
           queryKeys.map((queryKey) => {
             const update: any = {
               ...device,
               queryKey,
-              client: data.find((d) => d._id.toString() === value),
+              client: data.find((d) => d.id.toString() === value),
             };
 
             updateData(update);
@@ -64,7 +64,7 @@ function ChooseClients({ device }: { device: DeviceModel }) {
         <SelectGroup>
           <SelectLabel>Fruits</SelectLabel>
           {data.map((client) => (
-            <SelectItem value={client._id.toString()}>
+            <SelectItem value={client.id.toString()}>
               {client.name || client.email}
             </SelectItem>
           ))}

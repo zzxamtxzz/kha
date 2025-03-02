@@ -18,7 +18,7 @@ export async function PUT(
   await update.update({ isPublic: false });
   await DeviceModel.update(
     { isPublic: true },
-    { where: { _id: update.contentId } }
+    { where: { id: update.contentId } }
   );
 
   return Response.json({ message: "success" });

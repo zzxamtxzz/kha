@@ -27,7 +27,7 @@ function DeviceTrashItem({
           onClick={async () => {
             try {
               setLoading(true);
-              await axios.put(`/api/trashes/devices/${trash._id}`);
+              await axios.put(`/api/trashes/devices/${trash.id}`);
               toast({
                 title: "Success",
                 description: "Restore successfully",
@@ -41,7 +41,7 @@ function DeviceTrashItem({
                 queryClient.setQueryData(queryKey, {
                   ...existData,
                   pages: existData.pages.map((page) =>
-                    page.filter((p) => p._id !== trash._id)
+                    page.filter((p) => p.id !== trash.id)
                   ),
                 });
               }

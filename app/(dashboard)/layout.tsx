@@ -1,6 +1,33 @@
+import { getUser } from "@/auth/user";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
+import localFont from "next/font/local";
+import Image from "next/image";
+import { CustomQueryClientProvider } from "../contexts/tanstack";
+import { HasUserProvider } from "../contexts/user";
+import { VisitorProvider } from "../contexts/visitor";
+import "../globals.css";
+import "../index.css";
+import Login from "../login/page";
 import Sidebar from "./_components/sidebar/sidebar";
+
+const geistSans = localFont({
+  src: "../fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+
+const geistMono = localFont({
+  src: "../fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
+const helveticaNeueRoman = localFont({
+  src: "../fonts/HelveticaNeueRoman.woff",
+  variable: "--font-helvetica-roman",
+  weight: "100 900",
+});
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -17,12 +44,38 @@ export default async function RootLayout({
   children: React.ReactNode;
   create?: React.ReactNode;
 }>) {
+  const user = await getUser();
+
   return (
-    <div className="w-full h-full">
-      {create}
-      <Sidebar />
-      <div className="h-[calc(100%-56px)]">{children}</div>
-      <Toaster />
-    </div>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${helveticaNeueRoman.variable} antialiased h-screen`}
+      >
+        <VisitorProvider>
+          {user ? (
+            <HasUserProvider user={JSON.stringify(user)}>
+              <CustomQueryClientProvider>
+                <div className="w-full h-full">
+                  {create}
+                  <Sidebar />
+                  <div className="h-[calc(100%-56px)]">{children}</div>
+                  <Toaster />
+                </div>
+              </CustomQueryClientProvider>
+            </HasUserProvider>
+          ) : (
+            <>
+              <Image
+                src={"/starlink.jpg"}
+                fill
+                alt="background"
+                className="object-cover"
+              />
+              <Login searchParams={{}} />;
+            </>
+          )}
+        </VisitorProvider>
+      </body>
+    </html>
   );
 }

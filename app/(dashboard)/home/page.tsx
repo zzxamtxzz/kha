@@ -16,9 +16,9 @@ export default async function Home() {
   const clientQuery: any = { isPublic: true };
   const deviceQuery: any = { isPublic: true };
   if (ADMIN !== user.role) {
-    userQuery._id = user._id;
-    clientQuery._id = user.clientId;
-    deviceQuery.clientId = user.clientId;
+    userQuery.id = user.id;
+    clientQuery.id = user.client_id;
+    deviceQuery.client_id = user.client_id;
   }
 
   const users = await User.count({ where: userQuery });

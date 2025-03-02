@@ -4,7 +4,7 @@ import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
 class TableColumn extends Model {
-  public _id!: string;
+  public id!: string;
   public title!: number;
   public columns!: any;
   public userId!: string;
@@ -14,7 +14,7 @@ class TableColumn extends Model {
 
 TableColumn.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -29,7 +29,7 @@ TableColumn.init(
       allowNull: false,
       references: {
         model: "users",
-        key: "_id",
+        key: "id",
       },
     },
     isPublic: {

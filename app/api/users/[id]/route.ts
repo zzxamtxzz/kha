@@ -24,9 +24,9 @@ export async function PUT(
 
     saveUpdateData({
       title: "User",
-      contentId: user._id,
+      contentId: user.id,
       fromModel: "users",
-      userId: user._id,
+      userId: user.id,
       data: body,
     });
     return Response.json({ message: "updated" });

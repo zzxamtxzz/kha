@@ -4,22 +4,22 @@ import axios from "@/axios";
 import { generateSecureRandomId } from "@/lib/utils";
 import { ReactNode, createContext, useEffect } from "react";
 import {
-  browserName,
-  deviceType,
-  isDesktop,
-  isMobile,
-  isTablet,
-  osName,
+    browserName,
+    deviceType,
+    isDesktop,
+    isMobile,
+    isTablet,
+    osName,
 } from "react-device-detect";
 
 const VisitorContent = createContext<{}>({});
-const VISITOR_ID_KEY = "visitorId";
+const VISITORid_KEY = "visitorId";
 
 export const getVisitorId = () => {
-  let visitorId = localStorage.getItem(VISITOR_ID_KEY);
+  let visitorId = localStorage.getItem(VISITORid_KEY);
   if (!visitorId) {
     visitorId = generateSecureRandomId(15);
-    localStorage.setItem(VISITOR_ID_KEY, visitorId);
+    localStorage.setItem(VISITORid_KEY, visitorId);
   }
   return visitorId;
 };
@@ -27,9 +27,9 @@ export const getVisitorId = () => {
 export function VisitorProvider({ children }: { children: ReactNode }) {
   const { location, requestLocation } = useCurrentLocation();
   const saveVisitor = async () => {
-    const _id = getVisitorId();
+    const id = getVisitorId();
     const response = await axios.post(`/api/visitors`, {
-      _id,
+      id,
       location,
       device: deviceType,
       name: browserName,

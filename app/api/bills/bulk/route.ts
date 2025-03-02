@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
         amount: i.amount,
         serviceFee: i.serviceFee,
         remark: i.remark,
-        deviceId: device._id,
-        createdById: user._id,
+        deviceId: device.id,
+        created_by_id: user.id,
       };
     })
   );
@@ -28,11 +28,11 @@ export async function POST(request: NextRequest) {
       data
         .filter((d) => d)
         .map(async (bill) => {
-          const { _id } = bill;
+          const { id } = bill;
           let exist = null;
-          if (_id) {
+          if (id) {
             exist = await BillModel.findOne({
-              where: { _id },
+              where: { id },
             });
           }
           if (exist) {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 //   const clients = await Client.findAll();
 
 //   const data = body.map((i) => {
-//     const client = clients.find((c) => c._id === i.client);
+//     const client = clients.find((c) => c.id === i.client);
 //     return {
 //       email: i.email,
 //       name: i.name,
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
 //       kitNo: i.kitNo,
 //       serviceFee: i.serviceFee,
 //       remark: i.remark,
-//       clientId: client?._id,
-//       createdById: user._id,
+//       client_id: client?.id,
+//       created_by_id: user.id,
 //     };
 //   });
 

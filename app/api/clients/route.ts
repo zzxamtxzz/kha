@@ -1,11 +1,10 @@
 import { createUser } from "@/actions/user";
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
 import User from "@/models/user";
 import { actions, ADMIN, roles } from "@/roles";
 import { NextRequest } from "next/server";
-import { col, fn, Op } from "sequelize";
+import { Op } from "sequelize";
 
 export async function GET(request: NextRequest) {
   const user = await getUser();
@@ -17,46 +16,55 @@ export async function GET(request: NextRequest) {
 
   const params = request.nextUrl.searchParams;
   const searchParams = Object.fromEntries(params);
-  const { search, trashes } = searchParams;
+  const { search } = searchParams;
+  const page = parseInt(searchParams.page as string) || 1;
+  const size = parseInt(searchParams.size as string) || 10;
+  const start = (page - 1) * size;
 
-  const where: any = { isPublic: trashes ? false : true };
+  const where: any = { isPublic: true };
 
   if (search) {
     where[Op.or] = [
       { name: { [Op.like]: `%${search}%` } },
+      { first_name: { [Op.like]: `%${search}%` } },
+      { last_name: { [Op.like]: `%${search}%` } },
       { email: { [Op.like]: `%${search}%` } },
     ];
   }
 
-  const clients = await Client.findAll({
+  const { count, rows } = await Client.findAndCountAll({
     where,
     include: [
       {
         model: User,
         as: "createdBy",
-        attributes: ["_id", "email", "name"],
+        attributes: ["id", "email", "name"],
       },
-      {
-        model: DeviceModel,
-        as: "devices",
-        attributes: [],
-      },
+      // {
+      //   model: DeviceModel,
+      //   as: "devices",
+      //   attributes: [],
+      //   required: false,
+      // },
     ],
-    attributes: {
-      include: [[fn("COUNT", col("devices._id")), "deviceCount"]],
-    },
-    group: ["Client._id"],
+    // attributes: {
+    //   include: [[fn("COUNT", col("devices.id")), "deviceCount"]],
+    // },
+    // group: ["Client.id"],
+    offset: start,
+    limit: size,
     order: [["createdAt", "DESC"]],
   });
+  console.log("rows", rows.length);
 
-  return Response.json(clients);
+  return Response.json({ data: rows, total: count });
 }
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
   const body = await request.json();
-  const { email, name, remark, edit } = body; // Assuming clientId is provided for editing
+  const { email, name, remark, edit } = body; // Assuming client_id is provided for editing
 
   console.log("req.body", body);
 
@@ -66,11 +74,11 @@ export async function POST(request: NextRequest) {
     if (edit) {
       // Update existing client
       client = await Client.findOne({
-        where: { _id: edit },
+        where: { id: edit },
         include: {
           model: User,
           as: "createdBy",
-          attributes: ["_id", "email"],
+          attributes: ["id", "email"],
         },
       });
       // Update the client's fields
@@ -90,17 +98,17 @@ export async function POST(request: NextRequest) {
           email,
           name,
           remark,
-          createdById: user._id,
+          created_by_id: user.id,
         },
         {
           include: {
             model: User,
             as: "createdBy",
-            attributes: ["_id", "email"],
+            attributes: ["id", "email"],
           },
         }
       );
-      await createUser({ ...body, clientId: client._id });
+      await createUser({ ...body, client_id: client.id });
     }
 
     return Response.json(client);

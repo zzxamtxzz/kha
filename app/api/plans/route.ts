@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       serviceFee: Number(serviceFee),
       amountInPerMonth,
       remark,
-      createdById: user._id,
+      created_by_id: user.id,
     });
 
     return Response.json(newPlan);

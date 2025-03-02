@@ -27,7 +27,7 @@ export async function PUT(
           {
             model: User,
             as: "createdBy",
-            attributes: ["_id", "email", "name"],
+            attributes: ["id", "email", "name"],
           },
           {
             model: DeviceModel,
@@ -40,9 +40,9 @@ export async function PUT(
       if (updatedClient) {
         saveUpdateData({
           title: "Client",
-          contentId: updatedClient._id,
+          contentId: updatedClient.id,
           fromModel: "clients",
-          userId: user._id,
+          userId: user.id,
           data: body,
         });
         return Response.json({ client: updatedClient });
@@ -70,9 +70,9 @@ export async function DELETE(
 
     saveRemoveData({
       title: "Client",
-      contentId: device._id,
+      contentId: device.id,
       fromModel: "clients",
-      userId: user._id,
+      userId: user.id,
     });
 
     return Response.json({ message: "deleted" });

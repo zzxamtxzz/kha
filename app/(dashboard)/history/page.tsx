@@ -11,11 +11,11 @@ async function Histories() {
   if (!user) return;
   const query: any = { isPublic: true };
   if (ADMIN !== user.role) {
-    query.userId = user._id;
+    query.userId = user.id;
   }
   const visitors = await Visitor.findAll({
     where: query,
-    include: [{ model: User, as: "user", attributes: ["_id", "name", "email"] }],
+    include: [{ model: User, as: "user", attributes: ["id", "name", "email"] }],
     order: [["createdAt", "DESC"]],
   });
 

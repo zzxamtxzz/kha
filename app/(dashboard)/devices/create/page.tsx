@@ -18,7 +18,7 @@ async function CreateDevice({
 
   const clients = await Client.findAll({
     where: { isPublic: true },
-    attributes: ["name", "_id"],
+    attributes: ["name", "id"],
   });
 
   const edit = searchParams.edit as string;

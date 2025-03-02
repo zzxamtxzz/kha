@@ -24,7 +24,7 @@ function DeviceClient({
 }) {
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
-  const client = searchParams.get("clientId");
+  const client = searchParams.get("client_id");
   const stateParam = searchParams.get("state");
   const expired = searchParams.get("expired");
   const state = (stateParam || s || "list") as string;
@@ -98,7 +98,7 @@ function DeviceClient({
                       <CardHeader className="p-4">
                         <Link
                           className="hover:underline font-semibold"
-                          href={`/devices/${device._id}`}
+                          href={`/devices/${device.id}`}
                         >
                           {device.name || "no name"}
                         </Link>

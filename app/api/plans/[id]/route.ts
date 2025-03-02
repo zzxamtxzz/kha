@@ -11,7 +11,7 @@ export async function DELETE(
 
   try {
     await PlanModel.destroy({
-      where: { _id: params.id },
+      where: { id: params.id },
     });
 
     return Response.json({ message: "deleted" });

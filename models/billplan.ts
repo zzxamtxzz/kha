@@ -4,17 +4,17 @@ import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
 class PlanModel extends Model {
-  public _id!: string;
+  public id!: string;
   public amountInPerMonth!: number;
   public serviceFee!: number;
   public name!: string;
   public remark!: string;
-  public createdById!: string;
+  public created_by_id!: string;
 }
 
 PlanModel.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -23,9 +23,9 @@ PlanModel.init(
     serviceFee: { type: DataTypes.FLOAT },
     amountInPerMonth: { type: DataTypes.FLOAT },
     remark: { type: DataTypes.STRING },
-    createdById: {
+    created_by_id: {
       type: DataTypes.UUID,
-      references: { model: User, key: "_id" },
+      references: { model: User, key: "id" },
     },
   },
   {
@@ -37,7 +37,7 @@ PlanModel.init(
 );
 
 PlanModel.belongsTo(User, {
-  foreignKey: "createdById",
+  foreignKey: "created_by_id",
   as: "createdBy",
 });
 

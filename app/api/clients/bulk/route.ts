@@ -1,6 +1,5 @@
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
-import User from "@/models/user";
 import bcrypt from "bcrypt";
 import { NextRequest } from "next/server";
 
@@ -11,30 +10,28 @@ export async function POST(request: NextRequest) {
 
   const data = body.map((i) => ({
     ...i,
-    email:
-      i.email || i.name?.replace(/\s+/g, "").toLowerCase() + "@starlink.com",
     name: i.name,
     remark: i.remark,
-    createdById: user._id,
+    created_by_id: user.id,
   }));
 
   try {
     await Promise.all(
       data.map(async (client) => {
-        const { _id } = client;
-        let existingClient = null;
-        if (_id) {
-          existingClient = await Client.findOne({
-            where: { _id },
+        const { id } = client;
+        let exist = null;
+        if (id) {
+          exist = await Client.findOne({
+            where: { id },
           });
         }
-        if (existingClient) {
-          await existingClient.update({
+        if (exist) {
+          await exist.update({
             name: "update name",
             email: client.email,
             remark: client.remark,
           });
-          return existingClient;
+          return exist;
         } else {
           const hashedPassword = await bcrypt.hash(
             client.password?.toString() || "123654987",
@@ -45,7 +42,7 @@ export async function POST(request: NextRequest) {
             ...client,
             password: hashedPassword,
           };
-          await User.create(data);
+          // await User.create(data);
           const response = await Client.create(client);
           return response;
         }

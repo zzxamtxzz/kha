@@ -1,4 +1,4 @@
-import { useToast } from "@/hooks/use-toast";
+import { cookie } from "@/lib/utils";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { Check, ChevronDown, GripVertical } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -13,6 +13,8 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { ColumnType } from "./page";
+import axios from "@/axios";
+import { useToast } from "@/hooks/use-toast";
 
 function CustomTableColumn<T>({
   columns,
@@ -20,30 +22,22 @@ function CustomTableColumn<T>({
   setCurrentColumns,
   title,
 }: {
-  columns: ColumnType<T>[];
+  columns: string[];
   currentColumns: ColumnType<T>[];
   setCurrentColumns: Dispatch<SetStateAction<ColumnType<T>[]>>;
   title: string;
 }) {
   const [search, setSearch] = useState("");
-  const filterColumns = search
-    ? columns.filter(
-        (c) => c.name && c.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : columns;
 
   const { toast } = useToast();
   const saveColumns = async (columns: ColumnType<T>[]) => {
     try {
-      const response = await fetch("/api/tables_columns", {
-        method: "POST",
-        body: JSON.stringify({
-          columns: columns.filter((n) => n).map((c) => c.name),
-          title,
-        }),
-      });
-      const data = await response.json();
-      console.log("data", data);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/tables_columns`,
+        { column: columns.map((c) => c.name).filter((i) => i), title }
+        // { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("headers");
       toast({
         title: "success",
         description: "Save table columns",
@@ -56,21 +50,35 @@ function CustomTableColumn<T>({
   const onDragEnd = async (result: any) => {
     if (!result.destination) return;
 
-    const sourceChapterId = result.draggableId;
-    const destinationChapterId = currentColumns[result.destination.index].name;
-    const sourceIndex = currentColumns.findIndex(
-      (chapter) => chapter.name === sourceChapterId
-    );
-    const destinationIndex = currentColumns.findIndex(
-      (chapter) => chapter.name === destinationChapterId
-    );
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
-    const newState = [...currentColumns];
-    newState[sourceIndex] = currentColumns[destinationIndex];
-    newState[destinationIndex] = currentColumns[sourceIndex];
-    setCurrentColumns(newState);
-    saveColumns(newState);
+    const newData = [...currentColumns];
+
+    const [removed] = newData.splice(sourceIndex, 1);
+    newData.splice(destinationIndex, 0, removed);
+
+    setCurrentColumns(newData);
+    saveColumns(newData);
+
+    // const sourceChapterId = result.draggableId;
+    // const destinationChapterId = currentColumns[result.destination.index].name;
+    // const sourceIndex = currentColumns.findIndex(
+    //   (chapter) => chapter.name === sourceChapterId
+    // );
+    // const destinationIndex = currentColumns.findIndex(
+    //   (chapter) => chapter.name === destinationChapterId
+    // );
+
+    // const newState = [...currentColumns];
+    // newState[sourceIndex] = currentColumns[destinationIndex];
+    // newState[destinationIndex] = currentColumns[sourceIndex];
+    // setCurrentColumns(newState);
   };
+
+  const filterColumns = search
+    ? columns.filter((c) => c.toLowerCase().includes(search.toLowerCase()))
+    : columns;
 
   return (
     <DropdownMenu>
@@ -94,33 +102,36 @@ function CustomTableColumn<T>({
           />
         )}
         <div className="flex">
-          <div className="flex-1 px-2 py-2 mt-1 border-r w-[350px]">
+          <div className="flex-1 p-1 mt-1 border-r w-[350px]">
             <p className="font-semibold mb-2">Initial Columns</p>
             <div className="max-h-[500px] overflow-y-auto">
               {filterColumns.map((column, index) => {
                 if (!column) return;
-                const checked = currentColumns.find(
-                  (c) => c?.name === column.name
-                );
+                const checked = currentColumns.find((c) => c?.name === column);
                 return (
-                  <div key={index} className="flex hover rounded-sm p-2">
+                  <div
+                    key={index}
+                    className="flex hover rounded-sm items-center px-2"
+                  >
                     <Checkbox
                       onCheckedChange={async (checked) => {
                         const newColumns = !checked
-                          ? currentColumns.filter((p) => p.name !== column.name)
-                          : [...currentColumns, column];
+                          ? currentColumns.filter((p) => p.name !== column)
+                          : [...currentColumns, { name: column }];
                         setCurrentColumns(newColumns);
-                        saveColumns(newColumns);
+                        await saveColumns(newColumns);
                       }}
-                      name={column.name}
-                      id={column.name}
+                      name={column}
+                      id={column}
                       checked={checked ? true : false}
                     />
-                    <Label htmlFor={column.name} className="px-2 capitalize">
-                      {column.name &&
-                        column.name
-                          .replace(/([A-Z])/g, " $1")
-                          .replace(/^./, column.name[0]?.toUpperCase())}
+                    <Label
+                      htmlFor={column}
+                      className="px-2 capitalize w-full p-2"
+                    >
+                      {column
+                        .replace(/([A-Z])/g, " $1")
+                        .replace(/^./, column[0]?.toUpperCase())}
                     </Label>
                   </div>
                 );
@@ -133,7 +144,7 @@ function CustomTableColumn<T>({
                 <div
                   onMouseDown={(e) => e.stopPropagation()}
                   ref={droppableProvided.innerRef}
-                  className="mt-2 space-y-2 px-2"
+                  className="max-h-[550px] overflow-y-auto mt-2 space-y-2"
                   {...droppableProvided.droppableProps}
                 >
                   <p className="font-semibold p-2">Active Columns</p>
@@ -146,8 +157,10 @@ function CustomTableColumn<T>({
                       );
                       return (
                         <Draggable
-                          key={column.name}
-                          draggableId={column.name || ""}
+                          key={index}
+                          draggableId={
+                            (column.name || column.id)?.toString() || ""
+                          }
                           index={index}
                         >
                           {(provided, snapshot) => (

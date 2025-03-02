@@ -69,7 +69,7 @@ const CreateDeviceClient = ({
     }
   };
 
-  const select = clients.find((c) => c._id.toString() == formData.clientId);
+  const select = clients.find((c) => c.id.toString() == formData.client_id);
 
   return (
     <div className="w-full h-full p-4 center">

@@ -4,7 +4,7 @@ import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
 class Session extends Model {
-  public _id!: string;
+  public id!: string;
   public expires!: Date;
   public session!: any;
   public userId!: number;
@@ -13,7 +13,7 @@ class Session extends Model {
 
 Session.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
@@ -31,7 +31,7 @@ Session.init(
       allowNull: false,
       references: {
         model: "users", // Assumes you have an Employee model
-        key: "_id",
+        key: "id",
       },
     },
     isPublic: {

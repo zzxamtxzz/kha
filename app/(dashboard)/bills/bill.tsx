@@ -16,12 +16,13 @@ function BillComponent({ bill, ref }: { bill: BillModel; ref?: any }) {
   const expired = dayjs(bill?.billingDate)
     .add(bill?.durationMonth, "month")
     .isBefore(dayjs());
+  if (!bill) return null;
 
   return (
     <Card className="min-w-[200px] flex-1 cart-bg hover p-0" ref={ref}>
       <div className="px-4 pt-2 w-full flex justify-between">
         <Link
-          href={`/bills/${bill._id}`}
+          href={`/bills/${bill.id}`}
           className="font-semibold hover:underline"
         >
           {bill.device?.name || bill.device?.email}

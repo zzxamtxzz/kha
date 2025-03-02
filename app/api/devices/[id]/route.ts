@@ -20,9 +20,9 @@ export async function DELETE(
 
     saveRemoveData({
       title: "Device",
-      contentId: device._id,
+      contentId: device.id,
       fromModel: "devices",
-      userId: user._id,
+      userId: user.id,
     });
 
     return Response.json({ message: "deleted" });
@@ -59,9 +59,9 @@ export async function PUT(
 
     saveUpdateData({
       title: "Device",
-      contentId: device._id,
+      contentId: device.id,
       fromModel: "devices",
-      userId: user._id,
+      userId: user.id,
       data: body,
     });
 

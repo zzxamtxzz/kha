@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const device = await DeviceModel.findOne({
-      where: { isPublic: true, _id: deviceId },
+      where: { isPublic: true, id: deviceId },
     });
     if (!device)
       return Response.json({ error: "device not found" }, { status: 404 });
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         durationMonth,
         amount,
         remark,
-        createdById: user._id,
+        created_by_id: user.id,
       },
       {
         include: [
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     console.log("new bill", newBill);
 
-    await device.update({ lastBillId: newBill._id });
+    await device.update({ lastBillId: newBill.id });
 
     return Response.json(newBill);
   } catch (error: any) {

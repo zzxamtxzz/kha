@@ -16,14 +16,14 @@ export async function GET(request: NextRequest) {
   const limit = Number(size);
   const offset = (Number(page) - 1) * Number(size);
 
-  const response = await User.findAll({ offset, limit });
-  return Response.json(response);
+  const { rows, count } = await User.findAndCountAll({ offset, limit });
+  return Response.json({ data: rows, total: count });
 }
 
 export async function POST(request: NextRequest) {
-  const user = await getUser();
-  if (user?.role !== ADMIN)
-    return Response.json({ error: "user not found" }, { status: 404 });
+  // const user = await getUser();
+  // if (user?.role !== ADMIN)
+  //   return Response.json({ error: "user not found" }, { status: 404 });
 
   const body = await request.json();
   console.log(body);

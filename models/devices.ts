@@ -6,7 +6,7 @@ import Client from "./client";
 import User from "./user";
 
 class DeviceModel extends Model {
-  public _id!: string;
+  public id!: string;
   public email!: string;
   public name!: string;
   public deviceSerial!: string;
@@ -19,38 +19,37 @@ class DeviceModel extends Model {
   public isPublic!: boolean;
   public lastBillId!: number;
   public lastBill!: BillModel;
-  public createdById!: number;
-  public clientId!: string;
+  public created_by_id!: number;
+  public client_id!: string;
   public client!: Client;
 }
 
 DeviceModel.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
     email: { type: DataTypes.STRING, allowNull: false },
-    name: { type: DataTypes.STRING },
+    password: { type: DataTypes.STRING },
     deviceSerial: { type: DataTypes.STRING },
     accNo: { type: DataTypes.STRING },
     kitNo: { type: DataTypes.STRING },
-    serviceFee: { type: DataTypes.FLOAT },
     remark: { type: DataTypes.STRING },
     ref: { type: DataTypes.STRING },
     isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
     lastBillId: {
       type: DataTypes.UUID,
-      references: { model: BillModel, key: "_id" },
+      references: { model: BillModel, key: "id" },
     },
-    clientId: {
+    client_id: {
       type: DataTypes.UUID,
-      references: { model: "clients", key: "_id" },
+      references: { model: "clients", key: "id" },
     },
-    createdById: {
+    created_by_id: {
       type: DataTypes.UUID,
-      references: { model: User, key: "_id" },
+      references: { model: User, key: "id" },
     },
   },
   {
@@ -67,9 +66,9 @@ BillModel.belongsTo(DeviceModel, { foreignKey: "deviceId", as: "device" });
 DeviceModel.belongsTo(BillModel, { as: "lastBill", foreignKey: "lastBillId" });
 BillModel.hasOne(DeviceModel, { as: "lastBill", foreignKey: "lastBillId" });
 
-DeviceModel.belongsTo(User, { foreignKey: "createdById", as: "createdBy" });
+DeviceModel.belongsTo(User, { foreignKey: "created_by_id", as: "createdBy" });
 
-DeviceModel.belongsTo(Client, { foreignKey: "clientId", as: "client" });
-Client.hasMany(DeviceModel, { foreignKey: "clientId", as: "devices" });
+DeviceModel.belongsTo(Client, { foreignKey: "client_id", as: "client" });
+Client.hasMany(DeviceModel, { foreignKey: "client_id", as: "devices" });
 
 export default DeviceModel;

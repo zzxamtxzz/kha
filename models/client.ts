@@ -4,11 +4,13 @@ import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
 class Client extends Model {
-  public _id!: string;
+  public id!: string;
   public email!: string;
   public name!: string;
+  public first_name!: string;
+  public last_name!: string;
   public remark!: string;
-  public createdById!: string;
+  public created_by_id!: string;
   public createdBy!: User;
   public createdAt!: Date;
   public isPublic!: boolean;
@@ -20,19 +22,22 @@ class Client extends Model {
 
 Client.init(
   {
-    _id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
     email: { type: DataTypes.STRING },
     name: { type: DataTypes.STRING },
+    first_name: { type: DataTypes.STRING },
+    last_name: { type: DataTypes.STRING },
     remark: { type: DataTypes.STRING },
+    location: { type: DataTypes.STRING },
     ref: { type: DataTypes.STRING },
     isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
-    createdById: {
+    created_by_id: {
       type: DataTypes.UUID,
-      references: { model: "users", key: "_id" },
+      references: { model: "users", key: "id" },
     },
   },
   {
