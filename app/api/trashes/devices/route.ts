@@ -1,4 +1,4 @@
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import TrashModel from "@/models/trashes";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,10 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const response = await TrashModel.findAll({
-      where: { isPublic: true, fromModel: "devices" },
+      where: { is_public: true, fromModel: "devices" },
       include: [
         {
-          model: DeviceModel,
+          model: Device,
           as: "device",
           attributes: ["id", "id", "name", "email"],
         },

@@ -1,7 +1,6 @@
 import { getUser } from "@/auth/user";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import Image from "next/image";
 import { CustomQueryClientProvider } from "../contexts/tanstack";
 import { HasUserProvider } from "../contexts/user";
@@ -9,25 +8,8 @@ import { VisitorProvider } from "../contexts/visitor";
 import "../globals.css";
 import "../index.css";
 import Login from "../login/page";
+import Navigation from "./_components/sidebar/navigation";
 import Sidebar from "./_components/sidebar/sidebar";
-
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
-const helveticaNeueRoman = localFont({
-  src: "../fonts/HelveticaNeueRoman.woff",
-  variable: "--font-helvetica-roman",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -48,21 +30,22 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${helveticaNeueRoman.variable} antialiased h-screen`}
-      >
+      <body className={""}>
         <VisitorProvider>
           {user ? (
-            <HasUserProvider user={JSON.stringify(user)}>
-              <CustomQueryClientProvider>
-                <div className="w-full h-full">
+            <CustomQueryClientProvider>
+              <HasUserProvider user={JSON.stringify(user)}>
+                <div className="w-full h-full flex">
                   {create}
                   <Sidebar />
-                  <div className="h-[calc(100%-56px)]">{children}</div>
-                  <Toaster />
+                  <div className="flex-1">
+                    <Navigation />
+                    <div className="h-[calc(100%-56px)]">{children}</div>
+                  </div>
                 </div>
-              </CustomQueryClientProvider>
-            </HasUserProvider>
+                <Toaster />
+              </HasUserProvider>
+            </CustomQueryClientProvider>
           ) : (
             <>
               <Image

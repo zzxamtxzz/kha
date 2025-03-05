@@ -7,9 +7,9 @@ class TableColumn extends Model {
   public id!: string;
   public title!: number;
   public columns!: any;
-  public userId!: string;
+  public user_id!: string;
   public user!: User;
-  public isPublic!: boolean;
+  public is_public!: boolean;
 }
 
 TableColumn.init(
@@ -32,7 +32,7 @@ TableColumn.init(
         key: "id",
       },
     },
-    isPublic: {
+    is_public: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
@@ -42,6 +42,8 @@ TableColumn.init(
     modelName: "Column",
     tableName: "columns",
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 

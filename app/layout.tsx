@@ -2,6 +2,7 @@ import sequelize from "@/lib/mysql";
 import type { Metadata } from "next";
 import "./globals.css";
 import "./index.css";
+import Client from "@/models/client";
 
 export const metadata: Metadata = {
   title: "Starlink",
@@ -16,14 +17,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // sequelize
-  //   .sync({ alter: true })
-  //   .then(() => console.log("synced", new Date()))
-  //   .catch((error) => console.log("sync error", error));
+  Client.sync({ alter: true })
+    .then(() => console.log("synced", new Date()))
+    .catch((error) => console.log("sync error", error));
 
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="h-screen w-screen">{children}</body>
     </html>
   );
 }

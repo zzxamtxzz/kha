@@ -1,6 +1,6 @@
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { ADMIN } from "@/roles";
 import { NextRequest } from "next/server";
 
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "not allow" }, { status: 400 });
 
   const body = (await request.json()) as any[];
-  const clients = await Client.findAll({ where: { isPublic: true } });
+  const clients = await Client.findAll({ where: { is_public: true } });
 
   const data = body.map((i) => {
     const client = clients.find(
@@ -21,11 +21,10 @@ export async function POST(request: NextRequest) {
     return {
       ...i,
       email: i.email,
-      name: i.name,
-      deviceSerial: i.deviceSerial,
-      accNo: i.accNo,
-      kitNo: i.kitNo,
-      serviceFee: i.serviceFee,
+      device_serial: i.device_serial,
+      account_number: i.account_number,
+      kit_number: i.kit_number,
+      fee: i.fee,
       remark: i.remark,
       client_id: i.client_id || client?.id,
       created_by_id: user.id,
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest) {
         const { id } = device;
         let exist = null;
         if (id) {
-          exist = await DeviceModel.findOne({
+          exist = await Device.findOne({
             where: { id },
           });
         }
@@ -47,7 +46,7 @@ export async function POST(request: NextRequest) {
           await exist.update(device);
           return exist;
         } else {
-          const response = await DeviceModel.create(device);
+          const response = await Device.create(device);
           return response;
         }
       })
@@ -71,10 +70,10 @@ export async function POST(request: NextRequest) {
 //     return {
 //       email: i.email,
 //       name: i.name,
-//       deviceSerial: i.deviceSerial,
-//       accNo: i.accNo,
-//       kitNo: i.kitNo,
-//       serviceFee: i.serviceFee,
+//       device_serial: i.device_serial,
+//       account_number: i.account_number,
+//       kit_number: i.kit_number,
+//       fee: i.fee,
 //       remark: i.remark,
 //       client_id: client?.id,
 //       created_by_id: user.id,
@@ -82,7 +81,7 @@ export async function POST(request: NextRequest) {
 //   });
 
 //   try {
-//     const newClients = await DeviceModel.bulkCreate(data);
+//     const newClients = await Device.bulkCreate(data);
 //     return Response.json(newClients);
 //   } catch (error: any) {
 //     console.error("Error creating client:", error);

@@ -11,12 +11,14 @@ export const getDeviceQuery = ({
 }) => {
   const { search, client } = searchParams;
 
-  const where: any = { isPublic: true };
+  const where: any = { is_public: true };
 
   if (search) {
     where[Op.or] = [
-      { name: { [Op.like]: `%${search}%` } },
+      { device_serial: { [Op.like]: `%${search}%` } },
+      { account_number: { [Op.like]: `%${search}%` } },
       { email: { [Op.like]: `%${search}%` } },
+      { remark: { [Op.like]: `%${search}%` } },
     ];
   }
 

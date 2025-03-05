@@ -10,21 +10,21 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutateInfiniteData } from "../../hooks/mutateInfinite";
 
-function ChooseClients({ device }: { device: DeviceModel }) {
+function ChooseClients({ device }: { device: Device }) {
   const { toast } = useToast();
-  const { data = [] } = useQuery({
+  const { data = { total: 0, data: [] } } = useQuery({
     queryKey: ["clients"],
     queryFn: async () => {
       const response = await axios.get(`/api/clients`);
-      return response.data as Client[];
+      return response.data as { total: number; data: Client[] };
     },
   });
 
-  const { updateData } = useMutateInfiniteData();
+  const { updatedData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
   const queryCache = queryClient.getQueryCache();
   const queryKeys = queryCache
@@ -44,10 +44,10 @@ function ChooseClients({ device }: { device: DeviceModel }) {
             const update: any = {
               ...device,
               queryKey,
-              client: data.find((d) => d.id.toString() === value),
+              client: data.data.find((d) => d.id.toString() === value),
             };
 
-            updateData(update);
+            updatedData(update);
           });
         } catch (error: any) {
           toast({
@@ -63,7 +63,7 @@ function ChooseClients({ device }: { device: DeviceModel }) {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Fruits</SelectLabel>
-          {data.map((client) => (
+          {data.data.map((client) => (
             <SelectItem value={client.id.toString()}>
               {client.name || client.email}
             </SelectItem>

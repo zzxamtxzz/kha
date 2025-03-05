@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const response = await TrashModel.count({
-      where: { isPublic: true, fromModel: "clients" },
+      where: { is_public: true, fromModel: "clients" },
     });
     return NextResponse.json(response);
   } catch (error) {

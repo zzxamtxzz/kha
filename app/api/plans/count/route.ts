@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const searchParams = Object.fromEntries(params);
   const { search, trashes } = searchParams;
 
-  const where: any = { isPublic: trashes ? false : true };
+  const where: any = { is_public: trashes ? false : true };
 
   if (search) {
     where[Op.or] = [

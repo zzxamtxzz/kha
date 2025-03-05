@@ -13,7 +13,7 @@ import BillModel from "@/models/bill";
 import { useSearchParams } from "next/navigation";
 import { useInfiniteData } from "../../hooks/useInfiniteData";
 import BillComponent from "./bill";
-import CreateNewBill from "./choosedevice";
+import CreateNewBill from "./choose/choosedevice";
 
 function BillsClient({ state: s }: { state: string }) {
   const searchParams = useSearchParams();
@@ -43,16 +43,16 @@ function BillsClient({ state: s }: { state: string }) {
           columns={[
             {
               name: "device",
-              cell: ({ device }) => device.name || device.email,
+              cell: ({ device }) => device.email,
             },
-            { name: "billingDate" },
+            { name: "billing_date" },
             { name: "amount" },
-            { name: "serviceFee" },
-            { name: "durationMonth" },
+            { name: "fee" },
+            { name: "duration_month" },
             { name: "plan", cell: ({ plan }) => plan?.name },
             {
-              name: "createdBy",
-              cell: ({ createdBy }) => createdBy.name || createdBy.email,
+              name: "created_by",
+              cell: ({ created_by }) => created_by.name || created_by.email,
             },
           ]}
           title={"bills"}
@@ -97,7 +97,7 @@ function BillsClient({ state: s }: { state: string }) {
           {!loading && bills.length <= 0 && (
             <ShowNoText className="mx-auto w-[400px] flex flex-col gap-4">
               <span>No bill found </span>
-              <CreateNewBill searchParams={Object.fromEntries(searchParams)} />
+              <CreateNewBill />
             </ShowNoText>
           )}
           {bills.map((bill, k) => {

@@ -2,7 +2,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import BillModel from "@/models/bill";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import User from "@/models/user";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,16 +11,16 @@ import BillComponent from "../../bills/bill";
 import ClientDetailHeader from "./header";
 
 async function DeviceDetailPage({ params }: { params: { id: string } }) {
-  const device = await DeviceModel.findByPk(params.id, {
+  const device = await Device.findByPk(params.id, {
     include: [
-      { model: User, as: "createdBy", attributes: ["id", "email"] },
+      { model: User, as: "created_by", attributes: ["id", "email"] },
       { model: BillModel, as: "lastBill" },
     ],
   });
 
   if (!device) notFound();
 
-  const bills = await BillModel.findAll({ where: { deviceId: device.id } });
+  const bills = await BillModel.findAll({ where: { device_id: device.id } });
   return (
     <div className="w-full h-full p-8">
       <Card className="max-w-[700px] mx-auto p-0 w-full min-h-full">
@@ -30,7 +30,7 @@ async function DeviceDetailPage({ params }: { params: { id: string } }) {
         <CardContent className="p-4">
           <Link
             className={cn(buttonVariants({ variant: "outline" }))}
-            href={`/bills/create?deviceId=${params.id}`}
+            href={`/bills/create?device_id=${params.id}`}
           >
             Create Bill
           </Link>

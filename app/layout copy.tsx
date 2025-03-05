@@ -3,7 +3,7 @@ import sequelize from "@/lib/mysql";
 import BillModel from "@/models/bill";
 import Client from "@/models/client";
 import TableColumn from "@/models/column";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import TrashModel from "@/models/trashes";
 import UpdateModel from "@/models/updated";
 import User from "@/models/user";
@@ -56,19 +56,19 @@ export default async function RootLayout({
       .catch((error) => console.log("sync error", error));
   } catch (error) {}
 
-  User.count({ where: { isPublic: true } }).catch((err) =>
+  User.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
-  Client.count({ where: { isPublic: true } }).catch((err) =>
+  Client.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
-  DeviceModel.count({ where: { isPublic: true } }).catch((err) =>
+  Device.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
-  BillModel.count({ where: { isPublic: true } }).catch((err) =>
+  BillModel.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
-  TableColumn.count({ where: { isPublic: true } }).catch((err) =>
+  TableColumn.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
   Visitor.count().catch((err) => console.log("error"));

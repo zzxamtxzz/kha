@@ -1,7 +1,7 @@
 import { getUser } from "@/auth/user";
 import BillModel from "@/models/bill";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import User from "@/models/user";
 import { actions, ADMIN, roles } from "@/roles";
 import { NextRequest } from "next/server";
@@ -30,17 +30,17 @@ export async function GET(request: NextRequest) {
     offset,
     limit,
     include: [
-      { model: User, as: "createdBy", attributes: ["name", "email"] },
+      { model: User, as: "created_by", attributes: ["name", "email"] },
       { model: Client, as: "client", attributes: ["name", "email"] },
       {
         model: BillModel,
         as: "lastBill",
-        attributes: ["billingDate", "durationMonth"],
+        attributes: ["billing_date", "duration_month"],
       },
     ],
     order: [
-      [literal("COALESCE(`lastBill`.`billingDate`, '9999-12-31')"), "ASC"],
-      ["createdAt", "DESC"],
+      [literal("COALESCE(`lastBill`.`billing_date`, '9999-12-31')"), "ASC"],
+      ["created_at", "DESC"],
     ],
   };
 
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const currentDate = new Date();
     const oneMonthFromNow = new Date();
     let where: any = {
-      where: literal(`billingDate + INTERVAL durationMonth MONTH < NOW()`),
+      where: literal(`billing_date + INTERVAL duration_month MONTH < NOW()`),
     };
 
     if (!isNaN(Number(expired))) {
@@ -57,26 +57,26 @@ export async function GET(request: NextRequest) {
       where = {
         where: {
           [Op.and]: [
-            literal(`billingDate + INTERVAL durationMonth MONTH > NOW()`),
-            literal(`billingDate + INTERVAL durationMonth MONTH <= '${month}'`),
+            literal(`billing_date + INTERVAL duration_month MONTH > NOW()`),
+            literal(`billing_date + INTERVAL duration_month MONTH <= '${month}'`),
           ],
         },
       };
     }
 
     query.include = [
-      { model: User, as: "createdBy", attributes: ["name", "email"] },
+      { model: User, as: "created_by", attributes: ["name", "email"] },
       { model: Client, as: "client", attributes: ["name", "email"] },
       {
         model: BillModel,
         as: "lastBill",
-        attributes: ["billingDate", "durationMonth"],
+        attributes: ["billing_date", "duration_month"],
         where,
       },
     ];
   }
 
-  const { count, rows } = await DeviceModel.findAndCountAll(query);
+  const { count, rows } = await Device.findAndCountAll(query);
 
   return Response.json({ total: count, data: rows });
 }
@@ -92,27 +92,27 @@ export async function POST(request: NextRequest) {
     email,
     name,
     client_id,
-    deviceSerial,
-    accNo,
-    kitNo,
-    serviceFee,
+    device_serial,
+    account_number,
+    kit_number,
+    fee,
     remark,
   } = body;
 
   const include = [
-    { model: User, as: "createdBy", attributes: ["name", "email"] },
+    { model: User, as: "created_by", attributes: ["name", "email"] },
     { model: Client, as: "client", attributes: ["name", "email"] },
     {
       model: BillModel,
       as: "lastBill",
-      attributes: ["billingDate", "durationMonth"],
+      attributes: ["billing_date", "duration_month"],
     },
   ];
 
   try {
     let exist = null;
     if (id)
-      exist = await DeviceModel.findOne({
+      exist = await Device.findOne({
         where: { id },
         include,
       });
@@ -122,23 +122,23 @@ export async function POST(request: NextRequest) {
       newClient = await exist.update({
         name,
         client_id: Number(client_id),
-        deviceSerial,
-        accNo,
-        kitNo,
-        serviceFee: Number(serviceFee),
+        device_serial,
+        account_number,
+        kit_number,
+        fee: Number(fee),
         remark,
         created_by_id: user.id,
       });
     } else {
-      newClient = await DeviceModel.create(
+      newClient = await Device.create(
         {
           email,
           name,
           client_id: Number(client_id),
-          deviceSerial,
-          accNo,
-          kitNo,
-          serviceFee: Number(serviceFee),
+          device_serial,
+          account_number,
+          kit_number,
+          fee: Number(fee),
           remark,
           created_by_id: user.id,
         },
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
 //   const limit = Number(size);
 //   const offset = (Number(page) - 1) * limit;
 
-//   const where: any = { isPublic: true };
+//   const where: any = { is_public: true };
 
 //   if (search) {
 //     where[Op.or] = [
@@ -176,12 +176,12 @@ export async function POST(request: NextRequest) {
 //   }
 
 //   const include = [
-//     { model: User, as: "createdBy", attributes: ["name", "email"] },
+//     { model: User, as: "created_by", attributes: ["name", "email"] },
 //     { model: Client, as: "client", attributes: ["name", "email"] },
 //     {
 //       model: BillModel,
 //       as: "lastBill",
-//       attributes: ["billingDate", "durationMonth"],
+//       attributes: ["billing_date", "duration_month"],
 //     },
 //   ];
 
@@ -193,8 +193,8 @@ export async function POST(request: NextRequest) {
 //     const month = oneMonthFromNow.toISOString().split("T")[0];
 //     const expiredWhere = {
 //       [Op.and]: [
-//         literal(`billingDate + INTERVAL durationMonth MONTH > NOW()`),
-//         literal(`billingDate + INTERVAL durationMonth MONTH <= '${month}'`),
+//         literal(`billing_date + INTERVAL duration_month MONTH > NOW()`),
+//         literal(`billing_date + INTERVAL duration_month MONTH <= '${month}'`),
 //       ],
 //     };
 
@@ -207,11 +207,11 @@ export async function POST(request: NextRequest) {
 //     offset,
 //     include,
 //     order: [
-//       [literal("COALESCE(`lastBill`.`billingDate`, '9999-12-31')"), "ASC"],
-//       ["createdAt", "DESC"],
+//       [literal("COALESCE(`lastBill`.`billing_date`, '9999-12-31')"), "ASC"],
+//       ["created_at", "DESC"],
 //     ],
 //   };
 
-//   const devices = await DeviceModel.findAll(query);
+//   const devices = await Device.findAll(query);
 //   return Response.json(devices);
 // }

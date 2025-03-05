@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const response = await TrashModel.findAll({
-      where: { isPublic: true, fromModel: "clients" },
+      where: { is_public: true, fromModel: "clients" },
       include: [
         {
           model: Client,

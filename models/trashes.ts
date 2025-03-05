@@ -3,22 +3,22 @@ import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
 import BillModel from "./bill";
 import Client from "./client";
-import DeviceModel from "./devices";
+import Device from "./devices";
 import User from "./user";
 
 class TrashModel extends Model {
   public id!: string;
   public user!: User;
-  public userId!: number;
-  public isPublic!: boolean;
+  public user_id!: number;
+  public is_public!: boolean;
   public title!: string;
-  public contentId!: number;
+  public content_id!: number;
   public fromModel!: string;
-  public createdAt!: Date; // Adjust the type as needed
-  public updatedAt!: Date; // Adjust the type as needed
+  public created_at!: Date; // Adjust the type as needed
+  public updated_at!: Date; // Adjust the type as needed
   public client!: Client; // Adjust the type as needed
   public bill!: BillModel; // Adjust the type as needed
-  public device!: DeviceModel; // Adjust the type as needed
+  public device!: Device; // Adjust the type as needed
 }
 
 TrashModel.init(
@@ -28,11 +28,10 @@ TrashModel.init(
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
-    isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
     title: { type: DataTypes.STRING },
-    contentId: { type: DataTypes.UUID },
-    fromModel: { type: DataTypes.STRING },
-    userId: {
+    content_id: { type: DataTypes.UUID },
+    user_id: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
@@ -47,41 +46,43 @@ TrashModel.init(
     tableName: "trashes",
     timestamps: true,
     freezeTableName: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 
-User.hasMany(TrashModel, { foreignKey: "userId", as: "trashes" });
-TrashModel.belongsTo(User, { foreignKey: "userId", as: "user" });
+User.hasMany(TrashModel, { foreignKey: "user_id", as: "trashes" });
+TrashModel.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 // Polymorphic Associations
-TrashModel.belongsTo(DeviceModel, {
-  foreignKey: "contentId",
+TrashModel.belongsTo(Device, {
+  foreignKey: "content_id",
   constraints: false,
   as: "device",
 });
 TrashModel.belongsTo(Client, {
-  foreignKey: "contentId",
+  foreignKey: "content_id",
   constraints: false,
   as: "client",
 });
 TrashModel.belongsTo(BillModel, {
-  foreignKey: "contentId",
+  foreignKey: "content_id",
   constraints: false,
   as: "bill",
 });
 
-DeviceModel.hasMany(TrashModel, {
-  foreignKey: "contentId",
+Device.hasMany(TrashModel, {
+  foreignKey: "content_id",
   constraints: false,
-  scope: { contentType: "DeviceModel" },
+  scope: { contentType: "Device" },
 });
 Client.hasMany(TrashModel, {
-  foreignKey: "contentId",
+  foreignKey: "content_id",
   constraints: false,
   scope: { contentType: "ClientModel" },
 });
 BillModel.hasMany(TrashModel, {
-  foreignKey: "contentId",
+  foreignKey: "content_id",
   constraints: false,
   scope: { contentType: "BillModel" },
 });

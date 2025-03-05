@@ -1,27 +1,27 @@
 import BillModel from "@/models/bill";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import TrashModel from "@/models/trashes";
 import UpdateModel from "@/models/updated";
 
-export const saveUpdateData = async ({
+export const saveupdatedData = async ({
   title,
   fromModel,
-  contentId,
-  userId,
+  content_id,
+  user_id,
   data,
 }: {
   title: string;
   fromModel: string;
-  contentId: string;
-  userId: string;
+  content_id: string;
+  user_id: string;
   data: any;
 }) => {
   const updated = await UpdateModel.create({
     title,
     fromModel,
-    contentId,
-    userId,
+    content_id,
+    user_id,
     data,
   });
   return updated;
@@ -30,19 +30,19 @@ export const saveUpdateData = async ({
 export const saveRemoveData = async ({
   title,
   fromModel,
-  contentId,
-  userId,
+  content_id,
+  user_id,
 }: {
   title: string;
   fromModel: string;
-  contentId: string;
-  userId: string;
+  content_id: string;
+  user_id: string;
 }) => {
   const trash = await TrashModel.create({
     title,
     fromModel,
-    contentId,
-    userId,
+    content_id,
+    user_id,
   });
 
   return trash;

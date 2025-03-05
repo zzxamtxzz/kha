@@ -6,14 +6,14 @@ import User from "./user";
 class UpdateModel extends Model {
   public id!: string;
   public user!: User;
-  public userId!: number;
+  public user_id!: number;
   public data!: any;
-  public isPublic!: boolean;
+  public is_public!: boolean;
   public title!: string;
-  public contentId!: number;
+  public content_id!: number;
   public fromModel!: string;
-  public createdAt!: Date; // Adjust the type as needed
-  public updatedAt!: Date; // Adjust the type as needed
+  public created_at!: Date; // Adjust the type as needed
+  public updated_at!: Date; // Adjust the type as needed
 }
 
 UpdateModel.init(
@@ -23,12 +23,11 @@ UpdateModel.init(
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
-    isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
     data: { type: DataTypes.JSON },
     title: { type: DataTypes.STRING },
-    contentId: { type: DataTypes.UUID },
-    fromModel: { type: DataTypes.STRING },
-    userId: {
+    content_id: { type: DataTypes.UUID },
+    user_id: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
@@ -43,6 +42,8 @@ UpdateModel.init(
     tableName: "updates",
     timestamps: true,
     freezeTableName: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 

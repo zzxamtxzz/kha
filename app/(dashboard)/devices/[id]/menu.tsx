@@ -28,7 +28,7 @@ export function DeviceDetailMenubar({
   const router = useRouter();
 
   const { toast } = useToast();
-  const { updateData } = useMutateInfiniteData();
+  const { updatedData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -53,7 +53,7 @@ export function DeviceDetailMenubar({
             onClick={async () => {
               await axios.delete(`/api/${title}/${data}`);
               queryKeys.map((queryKey) =>
-                updateData({ queryKey, id: data, remove: true })
+                updatedData({ queryKey, id: data, remove: true })
               );
               toast({
                 title: "Succes",

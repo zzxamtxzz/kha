@@ -1,4 +1,4 @@
-import { saveUpdateData } from "@/actions/update";
+import { saveupdatedData } from "@/actions/update";
 import { getUser } from "@/auth/user";
 import User from "@/models/user";
 import { ADMIN } from "@/roles";
@@ -22,11 +22,11 @@ export async function PUT(
 
     await user.update(body);
 
-    saveUpdateData({
+    saveupdatedData({
       title: "User",
-      contentId: user.id,
+      content_id: user.id,
       fromModel: "users",
-      userId: user.id,
+      user_id: user.id,
       data: body,
     });
     return Response.json({ message: "updated" });

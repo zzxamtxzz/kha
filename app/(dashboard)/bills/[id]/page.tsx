@@ -7,7 +7,7 @@ import BillDetailHeader from "./header";
 
 async function BillDetail({ params }: { params: { id: string } }) {
   const bill = await BillModel.findByPk(params.id, {
-    include: { model: User, as: "createdBy", attributes: ["id", "email"] },
+    include: { model: User, as: "created_by", attributes: ["id", "email"] },
   });
 
   if (!bill) notFound();

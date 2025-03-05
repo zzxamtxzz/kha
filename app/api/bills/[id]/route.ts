@@ -11,7 +11,7 @@ export async function DELETE(
 
   try {
     await BillModel.update(
-      { isPublic: false },
+      { is_public: false },
       {
         where: { id: params.id },
       }
@@ -19,7 +19,7 @@ export async function DELETE(
 
     return Response.json({ message: "deleted" });
   } catch (error: any) {
-    console.error("Error creating DeviceModel:", error);
+    console.error("Error creating Device:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

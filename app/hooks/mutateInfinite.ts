@@ -1,6 +1,6 @@
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 
-type UpdateDataType<T> = T & {
+type updatedDataType<T> = T & {
   queryKey: QueryKey;
   new?: true;
   remove?: true;
@@ -9,8 +9,8 @@ type UpdateDataType<T> = T & {
 export function useMutateInfiniteData<T extends { id: string }>() {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
-    mutationFn: async (data: UpdateDataType<T>) => data,
-    onSuccess: (data: UpdateDataType<T>) => {
+    mutationFn: async (data: updatedDataType<T>) => data,
+    onSuccess: (data: updatedDataType<T>) => {
       const infiniteData = queryClient.getQueryData(data.queryKey) as {
         pages: T[][];
         pageParams: number[];
@@ -36,7 +36,7 @@ export function useMutateInfiniteData<T extends { id: string }>() {
       if (infiniteData) queryClient.setQueryData(data.queryKey, newAttendances);
     },
   });
-  const updateData = (data: UpdateDataType<T>) => mutate(data);
+  const updatedData = (data: updatedDataType<T>) => mutate(data);
 
-  return { updateData };
+  return { updatedData };
 }

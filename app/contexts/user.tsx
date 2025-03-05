@@ -1,6 +1,8 @@
 "use client";
 import User from "@/models/user";
 import { ReactNode, createContext, useContext } from "react";
+import { SheetProvider } from "./sheet";
+import { PopupProvider } from "./dialog";
 
 const HasUserContext = createContext<{
   user: User;
@@ -22,7 +24,9 @@ export function HasUserProvider({
 
   return (
     <HasUserContext.Provider value={{ user }}>
-      {children}
+      <PopupProvider>
+        <SheetProvider>{children}</SheetProvider>
+      </PopupProvider>
     </HasUserContext.Provider>
   );
 }

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "user not found" }, { status: 404 });
 
   const response = await TrashModel.count({
-    where: { isPublic: true, fromModel: "devices" },
+    where: { is_public: true, fromModel: "devices" },
   });
   return Response.json(response);
 }

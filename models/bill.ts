@@ -2,23 +2,23 @@ import sequelize from "@/lib/mysql";
 import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
 import PlanModel from "./billplan";
-import DeviceModel from "./devices";
+import Device from "./devices";
 import User from "./user";
 
 class BillModel extends Model {
   public id!: string;
   public amount!: number;
-  public serviceFee!: number;
-  public durationMonth!: number;
-  public billingDate!: Date;
+  public fee!: number;
+  public duration_month!: number;
+  public billing_date!: Date;
   public remark!: string;
-  public createdBy!: User;
-  public device!: DeviceModel;
-  public deviceId!: string;
-  public planId!: string;
+  public created_by!: User;
+  public device!: Device;
+  public device_id!: string;
+  public plan_id!: string;
   public plan!: PlanModel;
   public created_by_id!: string;
-  public isPublic!: boolean;
+  public is_public!: boolean;
 }
 
 BillModel.init(
@@ -28,13 +28,13 @@ BillModel.init(
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
-    serviceFee: { type: DataTypes.FLOAT },
-    durationMonth: { type: DataTypes.FLOAT },
+    fee: { type: DataTypes.FLOAT },
+    duration_month: { type: DataTypes.FLOAT },
     amount: { type: DataTypes.FLOAT },
-    billingDate: { type: DataTypes.DATE },
+    billing_date: { type: DataTypes.DATE },
     remark: { type: DataTypes.STRING },
-    isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
-    deviceId: {
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
+    device_id: {
       type: DataTypes.UUID,
       references: { model: "devices", key: "id" },
     },
@@ -48,10 +48,12 @@ BillModel.init(
     modelName: "Bill",
     tableName: "bills",
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 
-BillModel.belongsTo(User, { foreignKey: "created_by_id", as: "createdBy" });
-BillModel.belongsTo(PlanModel, { foreignKey: "planId", as: "plan" });
+BillModel.belongsTo(User, { foreignKey: "created_by_id", as: "created_by" });
+BillModel.belongsTo(PlanModel, { foreignKey: "plan_id", as: "plan" });
 
 export default BillModel;

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { actions, ADMIN, roles } from "@/roles";
 import dayjs from "dayjs";
 import { MoreHorizontal } from "lucide-react";
@@ -31,11 +31,11 @@ function DevicesClientTable({
   lastElementRef: any;
   saveColumns: string[];
 }) {
-  const devices = JSON.parse(d) as DeviceModel[];
+  const devices = JSON.parse(d) as Device[];
   const { user } = useHasUser();
   const foundRole = roles.find((r) => r.name === user.role);
 
-  const columns: ColumnType<DeviceModel>[] = [
+  const columns: ColumnType<Device>[] = [
     {
       //@ts-ignore
       name: "no",
@@ -46,9 +46,9 @@ function DevicesClientTable({
     {
       name: "email",
       cell: ({ lastBill, id, email }) => {
-        const billingDate = dayjs(lastBill?.billingDate);
-        const expirationDate = billingDate.add(
-          lastBill?.durationMonth,
+        const billing_date = dayjs(lastBill?.billing_date);
+        const expirationDate = billing_date.add(
+          lastBill?.duration_month,
           "month"
         );
         const currentDate = dayjs();
@@ -56,8 +56,8 @@ function DevicesClientTable({
         const daysUntilExpiration = expirationDate.diff(currentDate, "day");
         const daysExpired = currentDate.diff(expirationDate, "day");
 
-        const expired = dayjs(lastBill?.billingDate)
-          .add(lastBill?.durationMonth, "month")
+        const expired = dayjs(lastBill?.billing_date)
+          .add(lastBill?.duration_month, "month")
           .isBefore(dayjs());
 
         return (
@@ -100,9 +100,9 @@ function DevicesClientTable({
     //     );
     //   },
     // },
-    { name: "deviceSerial" },
-    { name: "accNo" },
-    { name: "kitNo" },
+    { name: "device_serial" },
+    { name: "account_number" },
+    { name: "kit_number" },
     {
       name: "client",
       cell: (device) => (
@@ -116,8 +116,8 @@ function DevicesClientTable({
       ),
     },
     {
-      name: "createdBy",
-      cell: ({ createdBy }) => createdBy.name || createdBy.email,
+      name: "created_by",
+      cell: ({ created_by }) => created_by.name || created_by.email,
     },
   ];
 
@@ -151,7 +151,7 @@ function DevicesClientTable({
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/bills/create?deviceId=${id}`}>
+                    <Link href={`/bills/create?device_id=${id}`}>
                       Create Bill
                     </Link>
                   </DropdownMenuItem>

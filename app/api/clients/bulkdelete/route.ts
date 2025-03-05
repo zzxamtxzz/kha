@@ -20,21 +20,21 @@ export async function DELETE(request: NextRequest) {
   try {
     let where: any = { id: { [Op.in]: clients.map(Number) } };
     if (all === "true") where = {};
-    await Client.update({ isPublic: false }, { where });
+    await Client.update({ is_public: false }, { where });
     const clientRecords = await Client.findAll({ where });
 
     for (const client of clientRecords) {
       await saveRemoveData({
         title: "Client",
-        contentId: client.id,
+        content_id: client.id,
         fromModel: "clients",
-        userId: user.id,
+        user_id: user.id,
       });
     }
 
     return Response.json({ message: "deleted" });
   } catch (error: any) {
-    console.error("Error creating DeviceModel:", error);
+    console.error("Error creating Device:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

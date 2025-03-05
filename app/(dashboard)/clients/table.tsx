@@ -31,7 +31,7 @@ function ClientTable({
 }) {
   const clients = JSON.parse(d) as Client[];
 
-  const { updateData } = useMutateInfiniteData();
+  const { updatedData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
   const queryCache = queryClient.getQueryCache();
   const queryKeys = queryCache
@@ -87,8 +87,8 @@ function ClientTable({
         );
       },
     },
-    { name: "createdBy" },
-    { name: "createdAt" },
+    { name: "created_by" },
+    { name: "created_at" },
     { name: "devices", cell: ({ deviceCount }) => <p>{deviceCount}</p> },
   ];
   return (
@@ -131,7 +131,7 @@ function ClientTable({
                     onClick={async () => {
                       await axios.delete(`/api/clients/${id}`);
                       queryKeys.map((queryKey) =>
-                        updateData({ queryKey, id, remove: true })
+                        updatedData({ queryKey, id, remove: true })
                       );
                     }}
                   >

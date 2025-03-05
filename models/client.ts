@@ -11,12 +11,12 @@ class Client extends Model {
   public last_name!: string;
   public remark!: string;
   public created_by_id!: string;
-  public createdBy!: User;
-  public createdAt!: Date;
-  public isPublic!: boolean;
+  public created_by!: User;
+  public created_at!: Date;
+  public is_public!: boolean;
   public deviceCount!: number;
   public user!: User;
-  public userId!: string;
+  public user_id!: string;
   public ref!: string;
 }
 
@@ -31,10 +31,11 @@ Client.init(
     name: { type: DataTypes.STRING },
     first_name: { type: DataTypes.STRING },
     last_name: { type: DataTypes.STRING },
+    phone_number: { type: DataTypes.STRING },
     remark: { type: DataTypes.STRING },
-    location: { type: DataTypes.STRING },
+    address: { type: DataTypes.STRING },
     ref: { type: DataTypes.STRING },
-    isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
     created_by_id: {
       type: DataTypes.UUID,
       references: { model: "users", key: "id" },
@@ -45,6 +46,8 @@ Client.init(
     modelName: "Client",
     tableName: "clients",
     timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
   }
 );
 

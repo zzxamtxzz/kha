@@ -16,21 +16,21 @@ export async function GET(request: NextRequest) {
   const searchParams = Object.fromEntries(params);
   const { search, trashes } = searchParams;
 
-  const where: any = { isPublic: trashes ? false : true };
+  const where: any = { is_public: trashes ? false : true };
 
   if (search) {
     where[Op.or] = [
       { name: { [Op.like]: `%${search}%` } },
-      { email: { [Op.like]: `%${search}%` } },
+      { remark: { [Op.like]: `%${search}%` } },
     ];
   }
 
-  const plans = await PlanModel.findAll({
+  const { rows, count } = await PlanModel.findAndCountAll({
     where,
-    order: [["createdAt", "DESC"]],
+    order: [["created_at", "DESC"]],
   });
 
-  return Response.json(plans);
+  return Response.json({ data: rows, total: count });
 }
 
 export async function POST(request: NextRequest) {
@@ -38,13 +38,13 @@ export async function POST(request: NextRequest) {
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
   const body = (await request.json()) as PlanModel;
 
-  const { name, serviceFee, amountInPerMonth, remark } = body;
+  const { name, fee, amount, remark } = body;
 
   try {
     const newPlan = await PlanModel.create({
       name,
-      serviceFee: Number(serviceFee),
-      amountInPerMonth,
+      fee: Number(fee),
+      amount,
       remark,
       created_by_id: user.id,
     });

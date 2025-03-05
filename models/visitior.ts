@@ -6,14 +6,14 @@ import User from "./user";
 class Visitor extends Model {
   public id!: string;
   public user!: User;
-  public userId!: number;
-  public isPublic!: boolean;
+  public user_id!: number;
+  public is_public!: boolean;
   public location!: any; // Adjust the type as needed
   public name!: string; // Adjust the type as needed
   public os!: string; // Adjust the type as needed
   public type!: string; // Adjust the type as needed
-  public createdAt!: Date; // Adjust the type as needed
-  public updatedAt!: Date; // Adjust the type as needed
+  public created_at!: Date; // Adjust the type as needed
+  public updated_at!: Date; // Adjust the type as needed
 }
 
 Visitor.init(
@@ -23,12 +23,12 @@ Visitor.init(
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
-    isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
     location: { type: DataTypes.GEOMETRY("POINT"), allowNull: true },
     name: { type: DataTypes.STRING },
     os: { type: DataTypes.STRING },
     type: { type: DataTypes.STRING },
-    userId: {
+    user_id: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
@@ -43,10 +43,12 @@ Visitor.init(
     tableName: "visitors",
     timestamps: true,
     freezeTableName: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 
-User.hasMany(Visitor, { foreignKey: "userId", as: "visitors" });
-Visitor.belongsTo(User, { foreignKey: "userId", as: "user" });
+User.hasMany(Visitor, { foreignKey: "user_id", as: "visitors" });
+Visitor.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 export default Visitor;

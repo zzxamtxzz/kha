@@ -5,41 +5,39 @@ import BillModel from "./bill";
 import Client from "./client";
 import User from "./user";
 
-class DeviceModel extends Model {
+class Device extends Model {
   public id!: string;
   public email!: string;
-  public name!: string;
-  public deviceSerial!: string;
-  public accNo!: string;
-  public kitNo!: string;
-  public serviceFee!: number;
+  public device_serial!: string;
+  public account_number!: string;
+  public kit_number!: string;
+  public fee!: number;
   public remark!: string;
   public ref!: string;
-  public createdBy!: User;
-  public isPublic!: boolean;
-  public lastBillId!: number;
+  public created_by!: User;
+  public is_public!: boolean;
+  public last_bill_id!: number;
   public lastBill!: BillModel;
   public created_by_id!: number;
   public client_id!: string;
   public client!: Client;
 }
 
-DeviceModel.init(
+Device.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: () => generateSecureRandomId(15),
       primaryKey: true,
     },
-    email: { type: DataTypes.STRING, allowNull: false },
-    password: { type: DataTypes.STRING },
-    deviceSerial: { type: DataTypes.STRING },
-    accNo: { type: DataTypes.STRING },
-    kitNo: { type: DataTypes.STRING },
+    email: { type: DataTypes.STRING },
+    device_serial: { type: DataTypes.STRING },
+    account_number: { type: DataTypes.STRING },
+    kit_number: { type: DataTypes.STRING },
     remark: { type: DataTypes.STRING },
     ref: { type: DataTypes.STRING },
-    isPublic: { type: DataTypes.BOOLEAN, defaultValue: true },
-    lastBillId: {
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
+    last_bill_id: {
       type: DataTypes.UUID,
       references: { model: BillModel, key: "id" },
     },
@@ -57,18 +55,20 @@ DeviceModel.init(
     modelName: "Device",
     tableName: "devices",
     timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
   }
 );
 
-DeviceModel.hasMany(BillModel, { foreignKey: "deviceId", as: "device" });
-BillModel.belongsTo(DeviceModel, { foreignKey: "deviceId", as: "device" });
+Device.hasMany(BillModel, { foreignKey: "device_id", as: "device" });
+BillModel.belongsTo(Device, { foreignKey: "device_id", as: "device" });
 
-DeviceModel.belongsTo(BillModel, { as: "lastBill", foreignKey: "lastBillId" });
-BillModel.hasOne(DeviceModel, { as: "lastBill", foreignKey: "lastBillId" });
+Device.belongsTo(BillModel, { as: "lastBill", foreignKey: "last_bill_id" });
+BillModel.hasOne(Device, { as: "lastBill", foreignKey: "last_bill_id" });
 
-DeviceModel.belongsTo(User, { foreignKey: "created_by_id", as: "createdBy" });
+Device.belongsTo(User, { foreignKey: "created_by_id", as: "created_by" });
 
-DeviceModel.belongsTo(Client, { foreignKey: "client_id", as: "client" });
-Client.hasMany(DeviceModel, { foreignKey: "client_id", as: "devices" });
+Device.belongsTo(Client, { foreignKey: "client_id", as: "client" });
+Client.hasMany(Device, { foreignKey: "client_id", as: "devices" });
 
-export default DeviceModel;
+export default Device;

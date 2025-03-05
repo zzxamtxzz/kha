@@ -1,10 +1,6 @@
 import BillPlansClient from "./client";
 
-function BillPlans({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+function BillPlans() {
   return <BillPlansClient state="" />;
 }
 

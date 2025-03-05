@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   const size = parseInt(searchParams.size as string) || 10;
   const start = (page - 1) * size;
 
-  const where: any = { isPublic: true };
+  const where: any = { is_public: true };
 
   if (search) {
     where[Op.or] = [
@@ -37,11 +37,11 @@ export async function GET(request: NextRequest) {
     include: [
       {
         model: User,
-        as: "createdBy",
+        as: "created_by",
         attributes: ["id", "email", "name"],
       },
       // {
-      //   model: DeviceModel,
+      //   model: Device,
       //   as: "devices",
       //   attributes: [],
       //   required: false,
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     // group: ["Client.id"],
     offset: start,
     limit: size,
-    order: [["createdAt", "DESC"]],
+    order: [["created_at", "DESC"]],
   });
   console.log("rows", rows.length);
 
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
         where: { id: edit },
         include: {
           model: User,
-          as: "createdBy",
+          as: "created_by",
           attributes: ["id", "email"],
         },
       });
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
         {
           include: {
             model: User,
-            as: "createdBy",
+            as: "created_by",
             attributes: ["id", "email"],
           },
         }

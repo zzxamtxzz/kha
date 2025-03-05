@@ -1,19 +1,10 @@
-import Client from "@/models/client";
+"use client";
 import CreateClientClient from "./client";
+import { useRouter } from "next/navigation";
 
-async function CreateClient({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const edit = searchParams.edit as string;
-  let data;
-  if (edit) {
-    data = await Client.findByPk(Number(edit));
-  }
-  return (
-    <CreateClientClient edit={JSON.stringify({ ...data?.dataValues, edit })} />
-  );
+function CreateClient() {
+  const router = useRouter();
+  return <CreateClientClient onSuccess={() => router.back()} />;
 }
 
 export default CreateClient;

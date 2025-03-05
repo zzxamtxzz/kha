@@ -1,35 +1,30 @@
-import { getUser } from "@/auth/user";
-import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+"use client";
 import { actions, ADMIN, roles } from "@/roles";
-import { notFound } from "next/navigation";
-import CreateDeviceClient from "./client";
+import { useRouter, useSearchParams } from "next/navigation";
+import CreateDeviceClient from "./form";
+import { useHasUser } from "@/app/contexts/user";
 
-async function CreateDevice({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const user = await getUser();
-  if (!user) return;
+function CreateDevice() {
+  const { user } = useHasUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const foundRole = roles.find((r) => r.name === user.role);
   if (ADMIN !== user.role && !foundRole?.devices.includes(actions.CREATE))
-    return notFound();
+    return null;
 
-  const clients = await Client.findAll({
-    where: { isPublic: true },
-    attributes: ["name", "id"],
-  });
-
-  const edit = searchParams.edit as string;
-  let data;
-  if (edit) {
-    data = await DeviceModel.findByPk(Number(edit));
-  }
   return (
     <CreateDeviceClient
-      clients={JSON.stringify(clients)}
-      edit={JSON.stringify({ ...data?.dataValues, edit })}
+      defaultValues={{
+        email: "",
+        client_id: searchParams.get("client_id"),
+        name: "",
+        fee: "",
+        device_serial: "",
+        account_number: "",
+        kit_number: "",
+        remark: "",
+      }}
+      onSuccess={() => router.back()}
     />
   );
 }

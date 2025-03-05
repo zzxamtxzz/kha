@@ -1,6 +1,6 @@
 import { getUser } from "@/auth/user";
 import BillModel from "@/models/bill";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -10,14 +10,14 @@ export async function POST(request: NextRequest) {
 
   const data = await Promise.all(
     body.map(async (i) => {
-      const device = await DeviceModel.findOne({ where: { email: i.device } });
+      const device = await Device.findOne({ where: { email: i.device } });
       if (!device) return;
       return {
         ...i,
         amount: i.amount,
-        serviceFee: i.serviceFee,
+        fee: i.fee,
         remark: i.remark,
-        deviceId: device.id,
+        device_id: device.id,
         created_by_id: user.id,
       };
     })
@@ -63,10 +63,10 @@ export async function POST(request: NextRequest) {
 //     return {
 //       email: i.email,
 //       name: i.name,
-//       deviceSerial: i.deviceSerial,
-//       accNo: i.accNo,
-//       kitNo: i.kitNo,
-//       serviceFee: i.serviceFee,
+//       device_serial: i.device_serial,
+//       account_number: i.account_number,
+//       kit_number: i.kit_number,
+//       fee: i.fee,
 //       remark: i.remark,
 //       client_id: client?.id,
 //       created_by_id: user.id,
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 //   });
 
 //   try {
-//     const newClients = await DeviceModel.bulkCreate(data);
+//     const newClients = await Device.bulkCreate(data);
 //     return Response.json(newClients);
 //   } catch (error: any) {
 //     console.error("Error creating client:", error);

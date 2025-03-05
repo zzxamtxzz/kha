@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   }
   const query: any = {};
   if (user) {
-    query.userId = user.id;
+    query.user_id = user.id;
   }
 
   const existingVisitor = await Visitor.findOne({
@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
 
   if (existingVisitor) {
     await existingVisitor.update({
-      userId: user?.id,
-      isPublic: true,
+      user_id: user?.id,
+      is_public: true,
       location: {
         type: "Point",
         coordinates: [
@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
   } else {
     // Create new visitor
     const newVisitor = await Visitor.create({
-      userId: user?.id,
-      isPublic: true,
+      user_id: user?.id,
+      is_public: true,
       location: {
         type: "Point",
         coordinates: [

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { UserRoundPlus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -33,7 +33,7 @@ function ClientsClient({
   const state = (stateParam || s) as string;
 
   const { data, loading, queryKey, lastElementRef, count } =
-    useInfiniteData<DeviceModel>({
+    useInfiniteData<Device>({
       keys: "clients",
       size: 20,
       params: { search },
@@ -103,7 +103,7 @@ function ClientsClient({
                       </CardHeader>
                       <CardContent className="p-4">{device.email}</CardContent>
                       <CardFooter className="p-4">
-                        <p>Created By: {device.createdBy?.email}</p>
+                        <p>Created By: {device.created_by?.email}</p>
                       </CardFooter>
                     </Card>
                   );

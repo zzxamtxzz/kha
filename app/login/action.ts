@@ -19,7 +19,7 @@ export async function login(state: any, formData: FormData) {
     const user = (
       await User.scope("withPassword").findOne({
         where: {
-          isPublic: true,
+          is_public: true,
           active: true,
           [Op.or]: [{ username: data.username }, { email: data.username }],
         },
@@ -58,7 +58,7 @@ export async function logout() {
     throw new Error("User not found");
   }
 
-  await user.update({ isPublic: false });
+  await user.update({ is_public: false });
   cookies().delete(cookie.name);
 
   redirect("/login");

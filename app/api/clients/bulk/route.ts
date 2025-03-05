@@ -1,6 +1,6 @@
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
-import bcrypt from "bcrypt";
+import Device from "@/models/devices";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -10,8 +10,6 @@ export async function POST(request: NextRequest) {
 
   const data = body.map((i) => ({
     ...i,
-    name: i.name,
-    remark: i.remark,
     created_by_id: user.id,
   }));
 
@@ -32,20 +30,23 @@ export async function POST(request: NextRequest) {
             remark: client.remark,
           });
           return exist;
-        } else {
-          const hashedPassword = await bcrypt.hash(
-            client.password?.toString() || "123654987",
-            10
-          );
-
-          const data = {
-            ...client,
-            password: hashedPassword,
-          };
-          // await User.create(data);
-          const response = await Client.create(client);
-          return response;
         }
+        const response = await Client.create(client);
+        const data = {
+          ...client,
+          email: client.email,
+          device_serial: client.device_serial,
+          account_number: client.account_number,
+          kit_number: client.kit_number,
+          fee: client.fee,
+          remark: client.remark,
+          client_id: response.id,
+          created_by_id: user.id,
+          ref: `Bulk create by ${user.name}`,
+        };
+        console.log("response client", response.id);
+        await Device.create(data);
+        return response;
       })
     );
     return Response.json({ message: "success" });

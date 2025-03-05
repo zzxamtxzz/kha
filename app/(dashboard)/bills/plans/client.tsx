@@ -23,20 +23,20 @@ function BillPlansClient({ state: s }: { state: string }) {
     params: { search },
   });
   return (
-    <div className="p-8 w-full">
+    <div className="p-8 w-[700px]">
       <div className="cart-bg p-4 rounded-lg max-w-[700px] mx-auto">
         <PlansHeaders />
         <div className="flex flex-col gap-4">
-          {loading && <SpinLoading className="h-24"/>}
+          {loading && <SpinLoading className="h-24" />}
           {!loading && plans.length <= 0 && (
-            <ShowNoText>No Plan found</ShowNoText>
+            <ShowNoText>Nothing found</ShowNoText>
           )}
           {plans.map((plan, index) => {
             return (
               <div key={index} className="p-2">
                 <p className="font-semibold">{plan.name}</p>
-                <p>Service Fee {plan.serviceFee}</p>
-                <p>Amount In per month {plan.amountInPerMonth}</p>
+                <p>Service Fee {plan.fee}</p>
+                <p>Amount In per month {plan.amount}</p>
               </div>
             );
           })}

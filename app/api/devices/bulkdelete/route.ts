@@ -1,6 +1,6 @@
 import { saveRemoveData } from "@/actions/update";
 import { getUser } from "@/auth/user";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { ADMIN } from "@/roles";
 import { NextRequest } from "next/server";
 import { Op } from "sequelize";
@@ -19,23 +19,23 @@ export async function DELETE(request: NextRequest) {
   try {
     let where: any = { id: { [Op.in]: devices.map(Number) } };
     if (all === "true") where = {};
-    await DeviceModel.update({ isPublic: false }, { where });
-    const deviceRecords = await DeviceModel.findAll({ where });
+    await Device.update({ is_public: false }, { where });
+    const deviceRecords = await Device.findAll({ where });
 
     console.log("device records", deviceRecords);
 
     for (const device of deviceRecords) {
       await saveRemoveData({
         title: "Device",
-        contentId: device.id,
+        content_id: device.id,
         fromModel: "devices",
-        userId: user.id,
+        user_id: user.id,
       });
     }
 
     return Response.json({ message: "deleted" });
   } catch (error: any) {
-    console.error("Error creating DeviceModel:", error);
+    console.error("Error creating Device:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

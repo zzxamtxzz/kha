@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { actions, ADMIN, roles } from "@/roles";
 import { NextRequest } from "next/server";
 import { getDeviceQuery } from "../action";
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "not allow" }, { status: 404 });
 
   const where = getDeviceQuery({ user, searchParams: {} });
-  const data = await DeviceModel.findAll({ where });
+  const data = await Device.findAll({ where });
 
   return Response.json(data);
 }

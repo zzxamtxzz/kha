@@ -23,7 +23,7 @@ function DefaultDataShow({
           const data = attendance[k];
 
           const date = k.includes("date");
-          const datetime = k.includes("createdAt") || k.includes("updatedAt");
+          const datetime = k.includes("created_at") || k.includes("updated_at");
           const object = typeof data === "object";
           return (
             <div
@@ -93,7 +93,7 @@ const ObjData = ({
                 <div className="p-2">
                   {i.includes("date") ? (
                     dayjs(data).format("YYYY-MM-DD")
-                  ) : i.includes("createdAt") || i.includes("updatedAt") ? (
+                  ) : i.includes("created_at") || i.includes("updated_at") ? (
                     dayjs(data).format("hh:mm A YYYY-MM-DD")
                   ) : typeof data === "string" ? (
                     data

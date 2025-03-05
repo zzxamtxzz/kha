@@ -1,7 +1,7 @@
-import { saveRemoveData, saveUpdateData } from "@/actions/update";
+import { saveRemoveData, saveupdatedData } from "@/actions/update";
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import User from "@/models/user";
 import { NextRequest } from "next/server";
 
@@ -13,16 +13,16 @@ export async function DELETE(
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
 
   try {
-    const device = await DeviceModel.findByPk(params.id);
+    const device = await Device.findByPk(params.id);
     if (!device) return Response.json({ error: "not found" }, { status: 404 });
 
-    await device.update({ isPublic: false });
+    await device.update({ is_public: false });
 
     saveRemoveData({
       title: "Device",
-      contentId: device.id,
+      content_id: device.id,
       fromModel: "devices",
-      userId: user.id,
+      user_id: user.id,
     });
 
     return Response.json({ message: "deleted" });
@@ -41,11 +41,11 @@ export async function PUT(
   const body = await request.json();
 
   try {
-    const device = await DeviceModel.findByPk(params.id, {
+    const device = await Device.findByPk(params.id, {
       include: [
         {
           model: User,
-          as: "createdBy",
+          as: "created_by",
           attributes: ["name", "email"],
         },
         {
@@ -57,11 +57,11 @@ export async function PUT(
     });
     if (!device) return Response.json({ error: "not found" }, { status: 404 });
 
-    saveUpdateData({
+    saveupdatedData({
       title: "Device",
-      contentId: device.id,
+      content_id: device.id,
       fromModel: "devices",
-      userId: user.id,
+      user_id: user.id,
       data: body,
     });
 

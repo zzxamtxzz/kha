@@ -2,7 +2,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import User from "@/models/user";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,12 +11,12 @@ import ClientDetailHeader from "./header";
 
 async function ClientDetail({ params }: { params: { id: string } }) {
   const client = await Client.findByPk(params.id, {
-    include: { model: User, as: "createdBy", attributes: ["id", "email"] },
+    include: { model: User, as: "created_by", attributes: ["id", "email"] },
   });
 
   if (!client) return notFound();
 
-  const devices = await DeviceModel.findAll({
+  const devices = await Device.findAll({
     where: { client_id: client.id },
     attributes: ["id", "email"],
   });

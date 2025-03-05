@@ -1,7 +1,7 @@
-import { saveRemoveData, saveUpdateData } from "@/actions/update";
+import { saveRemoveData, saveupdatedData } from "@/actions/update";
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import User from "@/models/user";
 import { NextRequest } from "next/server";
 
@@ -26,11 +26,11 @@ export async function PUT(
         include: [
           {
             model: User,
-            as: "createdBy",
+            as: "created_by",
             attributes: ["id", "email", "name"],
           },
           {
-            model: DeviceModel,
+            model: Device,
             as: "devices",
             attributes: [],
           },
@@ -38,11 +38,11 @@ export async function PUT(
       });
 
       if (updatedClient) {
-        saveUpdateData({
+        saveupdatedData({
           title: "Client",
-          contentId: updatedClient.id,
+          content_id: updatedClient.id,
           fromModel: "clients",
-          userId: user.id,
+          user_id: user.id,
           data: body,
         });
         return Response.json({ client: updatedClient });
@@ -66,13 +66,13 @@ export async function DELETE(
     const device = await Client.findByPk(params.id);
     if (!device) return Response.json({ error: "not found" }, { status: 404 });
 
-    await device.update({ isPublic: false });
+    await device.update({ is_public: false });
 
     saveRemoveData({
       title: "Client",
-      contentId: device.id,
+      content_id: device.id,
       fromModel: "clients",
-      userId: user.id,
+      user_id: user.id,
     });
 
     return Response.json({ message: "deleted" });

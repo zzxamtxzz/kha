@@ -5,8 +5,8 @@ import User from "./user";
 
 class PlanModel extends Model {
   public id!: string;
-  public amountInPerMonth!: number;
-  public serviceFee!: number;
+  public amount!: number;
+  public fee!: number;
   public name!: string;
   public remark!: string;
   public created_by_id!: string;
@@ -20,9 +20,10 @@ PlanModel.init(
       primaryKey: true,
     },
     name: { type: DataTypes.STRING, allowNull: false },
-    serviceFee: { type: DataTypes.FLOAT },
-    amountInPerMonth: { type: DataTypes.FLOAT },
+    fee: { type: DataTypes.FLOAT },
+    amount: { type: DataTypes.FLOAT },
     remark: { type: DataTypes.STRING },
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
     created_by_id: {
       type: DataTypes.UUID,
       references: { model: User, key: "id" },
@@ -33,12 +34,14 @@ PlanModel.init(
     modelName: "Plan",
     tableName: "plans",
     timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
   }
 );
 
 PlanModel.belongsTo(User, {
   foreignKey: "created_by_id",
-  as: "createdBy",
+  as: "created_by",
 });
 
 export default PlanModel;

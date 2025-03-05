@@ -1,20 +1,20 @@
 import { getUser } from "@/auth/user";
 import BillModel from "@/models/bill";
 import Client from "@/models/client";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import User from "@/models/user";
 import { ADMIN } from "@/roles";
 import Image from "next/image";
 import Link from "next/link";
 import { literal } from "sequelize";
-import CreateNewBill from "../bills/choosedevice";
+import CreateNewBill from "../bills/choose/choosedevice";
 
 export default async function Home() {
   const user = await getUser();
   if (!user) return;
-  const userQuery: any = { isPublic: true };
-  const clientQuery: any = { isPublic: true };
-  const deviceQuery: any = { isPublic: true };
+  const userQuery: any = { is_public: true };
+  const clientQuery: any = { is_public: true };
+  const deviceQuery: any = { is_public: true };
   if (ADMIN !== user.role) {
     userQuery.id = user.id;
     clientQuery.id = user.client_id;
@@ -23,23 +23,23 @@ export default async function Home() {
 
   const users = await User.count({ where: userQuery });
   const clients = await Client.count({ where: clientQuery });
-  const devices = await DeviceModel.count({ where: deviceQuery });
+  const devices = await Device.count({ where: deviceQuery });
 
   const query: any = {
     where: deviceQuery,
     include: [
-      { model: User, as: "createdBy", attributes: ["name", "email"] },
+      { model: User, as: "created_by", attributes: ["name", "email"] },
       { model: Client, as: "client", attributes: ["name", "email"] },
       {
         model: BillModel,
         as: "lastBill",
-        attributes: ["billingDate", "durationMonth"],
-        where: literal(`billingDate + INTERVAL durationMonth MONTH < NOW()`),
+        attributes: ["billing_date", "duration_month"],
+        where: literal(`billing_date + INTERVAL duration_month MONTH < NOW()`),
       },
     ],
   };
 
-  const expired = await DeviceModel.count(query);
+  const expired = await Device.count(query);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">

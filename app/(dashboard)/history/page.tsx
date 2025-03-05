@@ -9,14 +9,14 @@ import dayjs from "dayjs";
 async function Histories() {
   const user = await getUser();
   if (!user) return;
-  const query: any = { isPublic: true };
+  const query: any = { is_public: true };
   if (ADMIN !== user.role) {
-    query.userId = user.id;
+    query.user_id = user.id;
   }
   const visitors = await Visitor.findAll({
     where: query,
     include: [{ model: User, as: "user", attributes: ["id", "name", "email"] }],
-    order: [["createdAt", "DESC"]],
+    order: [["created_at", "DESC"]],
   });
 
   return (
@@ -45,8 +45,8 @@ async function Histories() {
                 </p>
                 <p>{visitor.type}</p>
                 <p className="text-xs">
-                  {dayjs(visitor.createdAt).format("MMMM DD")} at{" "}
-                  {dayjs(visitor.createdAt).format("hh:mm A")}
+                  {dayjs(visitor.created_at).format("MMMM DD")} at{" "}
+                  {dayjs(visitor.created_at).format("hh:mm A")}
                 </p>
               </CardContent>
             </Card>

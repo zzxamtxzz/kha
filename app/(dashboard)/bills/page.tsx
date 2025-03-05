@@ -15,7 +15,7 @@ import { ChartGantt, Plus } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import ListCartNavigation from "../_components/btn/listcart";
-import CreateNewBill from "./choosedevice";
+import CreateNewBill from "./choose/choosedevice";
 import BillsClient from "./client";
 import ImportDataWithExcelBills from "./import";
 
@@ -33,7 +33,8 @@ async function Bills({
   return (
     <div className="p-4 h-full w-full overflow-y-auto">
       <div className="flex items-center justify-between">
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex items-center gap-1">
+          <CreateNewBill />
           {(ADMIN === user.role ||
             foundRole?.plans.includes(actions.CREATE)) && (
             <Link
@@ -41,7 +42,7 @@ async function Bills({
               href={"/bills/plans/create"}
             >
               <Plus className="w-4" />
-              <span className="px-2">Create New Plan</span>
+              <span className="px-2">Create plan</span>
             </Link>
           )}
           <Link
@@ -49,16 +50,12 @@ async function Bills({
             href={"/bills/plans"}
           >
             <ChartGantt className="w-4" />
-            <span className="px-2">Check Plans</span>
+            <span className="px-2">Plans</span>
           </Link>
-        </div>
-        <div className="lg:flex hidden gap-2 flex-wrap">
-          <ListCartNavigation state={state} />{" "}
-          <CreateNewBill searchParams={searchParams} />
           <ExportBtn data={JSON.stringify([])} title={"clients"} />
           {ADMIN === user.role && <ImportDataWithExcelBills />}
         </div>
-
+        <ListCartNavigation state={state} />{" "}
         <Sheet>
           <div className="fixed z-50 lg:hidden bottom-5 left-2 flex flex-col gap-2">
             <Button
@@ -90,7 +87,7 @@ async function Bills({
                 data={JSON.stringify([])}
                 title={"clients"}
               />
-              <CreateNewBill className={"w-full"} searchParams={searchParams} />
+              <CreateNewBill className={"w-full"} />
             </div>
           </SheetContent>
         </Sheet>

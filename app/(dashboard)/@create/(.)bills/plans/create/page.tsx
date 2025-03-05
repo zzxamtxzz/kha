@@ -1,14 +1,12 @@
 import CreatePlan from "@/app/(dashboard)/bills/plans/create/page";
 import { Modal } from "@/components/shared/modal";
 
-function PlanCreateModal({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+function PlanCreateModal() {
   return (
     <Modal>
-      <CreatePlan searchParams={searchParams} />
+      <div className="w-full h-full p-4">
+        <CreatePlan />
+      </div>
     </Modal>
   );
 }

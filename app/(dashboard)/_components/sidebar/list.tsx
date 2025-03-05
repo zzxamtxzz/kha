@@ -21,12 +21,12 @@ const routes = [
   {
     title: "clients",
     href: "/clients",
-    icon: <UsersRound size={22} />,
+    icon: <UsersRound size={20} />,
   },
   {
     title: "devices",
     href: "/devices",
-    icon: <GalleryVerticalEnd size={22} />,
+    icon: <GalleryVerticalEnd size={20} />,
   },
   // {
   //   title: "professional dashboard",
@@ -36,7 +36,7 @@ const routes = [
   {
     title: "bills",
     href: "/bills",
-    icon: <CircleDollarSign size={22} />,
+    icon: <CircleDollarSign size={20} />,
   },
 ];
 
@@ -45,34 +45,26 @@ function List() {
   const { user } = useHasUser();
   const foundRole = roles.find((r) => r.name === user.role);
   return (
-    <ul className="h-full hidden sm:flex">
+    <ul className="flex flex-col gap-2 w-full p-2">
       {routes
         .filter((r) => ADMIN === user.role || (foundRole && foundRole[r.title]))
         .map((route, index) => {
           const active = pathname.startsWith(route.href);
           return (
-            <li key={index} className="h-full relative px-2">
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <Link
-                    key={index}
-                    className={cn(
-                      "h-full rounded-sm center px-8",
-                      active ? "text-primary" : "hover"
-                    )}
-                    href={route.href}
-                  >
-                    {route.icon}
-                    {active && (
-                      <div className="w-full h-1 bg-primary absolute bottom-[-4px]"></div>
-                    )}
-                  </Link>
-                </HoverCardTrigger>
-                <HoverCardContent className="bg-black opacity-80 text-white w-auto p-2">
-                  <p className="capitalize">{route.title}</p>
-                </HoverCardContent>
-              </HoverCard>
-            </li>
+            <Link
+              key={index}
+              className={cn(
+                "h-full rounded-sm flex p-2",
+                active ? "text-primary bg-gray-500" : "hover"
+              )}
+              href={route.href}
+            >
+              {route.icon}
+              <span className="capitalize px-2">{route.title}</span>
+              {active && (
+                <div className="w-full h-1 bg-primary absolute bottom-[-4px]"></div>
+              )}
+            </Link>
           );
         })}
     </ul>

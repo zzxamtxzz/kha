@@ -1,14 +1,12 @@
 import CreateClient from "@/app/(dashboard)/clients/create/page";
 import { Modal } from "@/components/shared/modal";
 
-function ClientCreateModal({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+function ClientCreateModal() {
   return (
     <Modal>
-      <CreateClient searchParams={searchParams} />
+      <div className="p-4 center">
+        <CreateClient />
+      </div>
     </Modal>
   );
 }

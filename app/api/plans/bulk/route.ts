@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import DeviceModel from "@/models/devices";
+import Device from "@/models/devices";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -10,15 +10,15 @@ export async function POST(request: NextRequest) {
   const data = body.map((i) => {
     return {
       name: i.name,
-      serviceFee: i.serviceFee,
-      amountInPerMonth: i.amountInPerMonth,
+      fee: i.fee,
+      amount: i.amount,
       remark: i.remark,
       created_by_id: user.id,
     };
   });
 
   try {
-    const newClients = await DeviceModel.bulkCreate(data);
+    const newClients = await Device.bulkCreate(data);
     return Response.json(newClients);
   } catch (error: any) {
     console.error("Error creating client:", error);

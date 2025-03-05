@@ -7,8 +7,8 @@ class Session extends Model {
   public id!: string;
   public expires!: Date;
   public session!: any;
-  public userId!: number;
-  public isPublic!: boolean;
+  public user_id!: number;
+  public is_public!: boolean;
 }
 
 Session.init(
@@ -34,7 +34,7 @@ Session.init(
         key: "id",
       },
     },
-    isPublic: {
+    is_public: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
@@ -44,6 +44,8 @@ Session.init(
     modelName: "Session",
     tableName: "sessions",
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 );
 

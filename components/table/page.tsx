@@ -49,7 +49,7 @@ function DynamicTable<T extends { id: string; name?: string }>({
 
   const { toast } = useToast();
 
-  const { updateData } = useMutateInfiniteData();
+  const { updatedData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -86,7 +86,7 @@ function DynamicTable<T extends { id: string; name?: string }>({
                   });
                   queryKeys.forEach((queryKey) => {
                     checks.map((id) =>
-                      updateData({ queryKey, id, remove: true })
+                      updatedData({ queryKey, id, remove: true })
                     );
                   });
                   toast({ title: "Success", description: "Delete successful" });
