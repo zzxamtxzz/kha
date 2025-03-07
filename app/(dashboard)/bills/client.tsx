@@ -1,6 +1,6 @@
 "use client";
 import ShowNoText from "@/components/app/nodata";
-import DynamicTable from "@/components/table/page";
+import DynamicTable, { ColumnType } from "@/components/table/page";
 import {
   Card,
   CardContent,
@@ -9,15 +9,15 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import { useSearchParams } from "next/navigation";
 import { useInfiniteData } from "../../hooks/useInfiniteData";
 import BillComponent from "./bill";
 import CreateNewBill from "./choose/choosedevice";
+import Link from "next/link";
 
 function BillsClient({ state: s }: { state: string }) {
   const searchParams = useSearchParams();
-
   const search = searchParams.get("search") || "";
   const state = (searchParams.get("state") || s) as string;
   const {
@@ -26,35 +26,47 @@ function BillsClient({ state: s }: { state: string }) {
     queryKey,
     count,
     lastElementRef,
-  } = useInfiniteData<BillModel>({
+  } = useInfiniteData<Bill>({
     keys: "bills",
     size: 20,
     params: { search },
   });
 
+  const columns: ColumnType<Bill>[] = [
+    {
+      id: "device",
+      name: "device",
+      cell: ({ device, id }) => (
+        <Link className="hover:underline" href={`/bills/${id}`}>
+          {device?.client?.name || device.email}
+        </Link>
+      ),
+    },
+    {
+      id: "billing_date",
+      name: "billing_date",
+    },
+    { id: "amount", name: "amount" },
+    { id: "fee", name: "fee" },
+    { id: "duration_month", name: "duration_month" },
+    { id: "plan", name: "plan", cell: ({ plan }) => plan?.name },
+    {
+      id: "created_by",
+      name: "created_by",
+      cell: ({ created_by }) =>
+        created_by.username || created_by.name || created_by.email,
+    },
+  ];
   return (
     <div className={cn("max-w-[1200px] mx-auto mt-4")}>
       {state === "list" ? (
-        <DynamicTable<BillModel>
+        <DynamicTable<Bill>
           className="h-full mt-2 mx-auto cart-bg shadow-m rounded-lg"
           lastElementRef={lastElementRef}
           loading={loading}
           data={bills}
-          columns={[
-            {
-              name: "device",
-              cell: ({ device }) => device.email,
-            },
-            { name: "billing_date" },
-            { name: "amount" },
-            { name: "fee" },
-            { name: "duration_month" },
-            { name: "plan", cell: ({ plan }) => plan?.name },
-            {
-              name: "created_by",
-              cell: ({ created_by }) => created_by.name || created_by.email,
-            },
-          ]}
+          columnNames={columns.map((c) => c.name)}
+          columns={columns}
           title={"bills"}
         />
       ) : (

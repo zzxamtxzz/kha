@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import PlanModel from "@/models/billplan";
+import Plan from "@/models/billplan";
 import { actions, ADMIN, roles } from "@/roles";
 import { NextRequest } from "next/server";
 import { Op } from "sequelize";
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     ];
   }
 
-  const { rows, count } = await PlanModel.findAndCountAll({
+  const { rows, count } = await Plan.findAndCountAll({
     where,
     order: [["created_at", "DESC"]],
   });
@@ -36,12 +36,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
-  const body = (await request.json()) as PlanModel;
+  const body = (await request.json()) as Plan;
 
   const { name, fee, amount, remark } = body;
 
   try {
-    const newPlan = await PlanModel.create({
+    const newPlan = await Plan.create({
       name,
       fee: Number(fee),
       amount,

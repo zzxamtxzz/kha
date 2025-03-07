@@ -117,7 +117,7 @@ function DevicesClientTable({
     },
     {
       name: "created_by",
-      cell: ({ created_by }) => created_by.name || created_by.email,
+      cell: ({ created_by }) => created_by?.name || created_by?.email,
     },
   ];
 

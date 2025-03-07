@@ -31,7 +31,7 @@ function ClientTable({
 }) {
   const clients = JSON.parse(d) as Client[];
 
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
   const queryCache = queryClient.getQueryCache();
   const queryKeys = queryCache
@@ -131,7 +131,7 @@ function ClientTable({
                     onClick={async () => {
                       await axios.delete(`/api/clients/${id}`);
                       queryKeys.map((queryKey) =>
-                        updatedData({ queryKey, id, remove: true })
+                        updateData({ queryKey, id, remove: true })
                       );
                     }}
                   >

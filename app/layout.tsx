@@ -1,8 +1,8 @@
-import sequelize from "@/lib/mysql";
 import type { Metadata } from "next";
 import "./globals.css";
-import "./index.css";
-import Client from "@/models/client";
+import DeviceEmail from "@/models/device_email";
+import Bill from "@/models/bill";
+import EventTracking from "@/models/events";
 
 export const metadata: Metadata = {
   title: "Starlink",
@@ -17,7 +17,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  Client.sync({ alter: true })
+  Bill.sync({ alter: true })
     .then(() => console.log("synced", new Date()))
     .catch((error) => console.log("sync error", error));
 

@@ -6,7 +6,6 @@ import { CustomQueryClientProvider } from "../contexts/tanstack";
 import { HasUserProvider } from "../contexts/user";
 import { VisitorProvider } from "../contexts/visitor";
 import "../globals.css";
-import "../index.css";
 import Login from "../login/page";
 import Navigation from "./_components/sidebar/navigation";
 import Sidebar from "./_components/sidebar/sidebar";

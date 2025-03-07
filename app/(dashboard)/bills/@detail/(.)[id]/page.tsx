@@ -1,11 +1,11 @@
-import { Modal } from "@/components/shared/modal";
-import BillDetail from "../../[id]/page";
+import BillDetail from "../../[id]/client";
+import { SheetModal } from "@/components/shared/sheet";
 
-function ClientDetailModal({ params }: { params: { id: string } }) {
+function ClientDetailModal() {
   return (
-    <Modal>
-      <BillDetail params={params} />
-    </Modal>
+    <SheetModal className={"min-w-[1000px]"}>
+      <BillDetail />
+    </SheetModal>
   );
 }
 

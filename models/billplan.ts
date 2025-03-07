@@ -3,7 +3,7 @@ import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
 import User from "./user";
 
-class PlanModel extends Model {
+class Plan extends Model {
   public id!: string;
   public amount!: number;
   public fee!: number;
@@ -12,7 +12,7 @@ class PlanModel extends Model {
   public created_by_id!: string;
 }
 
-PlanModel.init(
+Plan.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -39,9 +39,9 @@ PlanModel.init(
   }
 );
 
-PlanModel.belongsTo(User, {
+Plan.belongsTo(User, {
   foreignKey: "created_by_id",
   as: "created_by",
 });
 
-export default PlanModel;
+export default Plan;

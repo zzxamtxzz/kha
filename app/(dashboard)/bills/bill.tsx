@@ -1,11 +1,11 @@
 "use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import dayjs from "dayjs";
 import Link from "next/link";
 
-function BillComponent({ bill, ref }: { bill: BillModel; ref?: any }) {
+function BillComponent({ bill, ref }: { bill: Bill; ref?: any }) {
   const billing_date = dayjs(bill?.billing_date);
   const expirationDate = billing_date.add(bill?.duration_month, "month");
   const currentDate = dayjs();

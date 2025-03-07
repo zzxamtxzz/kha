@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import PlanModel from "@/models/billplan";
+import Plan from "@/models/billplan";
 import { actions, ADMIN, roles } from "@/roles";
 import { NextRequest } from "next/server";
 import { Op } from "sequelize";
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     ];
   }
 
-  const plans = await PlanModel.count({ where });
+  const plans = await Plan.count({ where });
 
   return Response.json(plans);
 }

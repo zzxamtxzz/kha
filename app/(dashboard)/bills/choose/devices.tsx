@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import Device from "@/models/devices";
-import Link from "next/link";
 import { useState } from "react";
-import CreateBill from "../create/page";
-import CreateDevice from "../../devices/create/page";
 import CreateDeviceClient from "../../devices/create/form";
+import CreateBillClient from "../create/client";
+import CreateBill from "../create/page";
 
 function Devices() {
   const [search, setSearch] = useState("");
+  const [device, setDevice] = useState<Device | null>(null);
   const { data, loading, queryKey, lastElementRef } = useInfiniteData<Device>({
     keys: "devices",
     size: 20,
@@ -31,9 +31,9 @@ function Devices() {
       />
       {loading && (
         <div className="flex flex-col gap-2">
-          <Skeleton className="w-44 h-4" />
-          <Skeleton className="w-24 h-4" />
-          <Skeleton className="w-36 h-4" />
+          <Skeleton className="w-44 h-6" />
+          <Skeleton className="w-24 h-6" />
+          <Skeleton className="w-36 h-6" />
         </div>
       )}
       {!loading && !data.length && <ShowNoText>Nothing found</ShowNoText>}
@@ -45,7 +45,19 @@ function Devices() {
             setContent(
               <CreateDeviceClient
                 defaultValues={{ email: search }}
-                onSuccess={closeSheet}
+                onSuccess={(device) => {
+                  closeSheet();
+                  if (device) {
+                    setOpen(true);
+                    setClassName("min-w-[700px]");
+                    setContent(
+                      <CreateBillClient
+                        onSuccess={closeSheet}
+                        device={device}
+                      />
+                    );
+                  }
+                }}
               />
             );
           }}
@@ -56,14 +68,20 @@ function Devices() {
       {data.map((device, index) => {
         if (!device) return null;
         return (
-          <Link
-            href={`/bills/create?device_id=${device.id}`}
+          <div
+            onClick={() => {
+              setOpen(true);
+              setClassName("min-w-[700px]");
+              setContent(
+                <CreateBillClient onSuccess={closeSheet} device={device} />
+              );
+            }}
             className="p-2 hover"
             ref={index === data.length - 1 ? lastElementRef : null}
             key={index}
           >
             {device.client?.name || device.email}
-          </Link>
+          </div>
         );
       })}
     </div>

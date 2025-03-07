@@ -6,7 +6,7 @@ import { parse } from "url";
 dotenv.config();
 
 const port = parseInt(process.env.PORT || "5000", 10);
-const dev = process.env.NODE_ENV !== "production";
+const dev = false
 const app = next({ dev: false });
 const handle = app.getRequestHandler();
 

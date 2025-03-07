@@ -1,4 +1,5 @@
 "use client";
+import { useMutateInfiniteData } from "@/app/hooks/mutateInfinite";
 import axios from "@/axios";
 import {
     Menubar,
@@ -15,11 +16,10 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { Ellipsis } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMutateInfiniteData } from "../../../hooks/mutateInfinite";
 
 export function BillMenu({ data, title }: { data: string; title: string }) {
   const router = useRouter();
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -44,7 +44,7 @@ export function BillMenu({ data, title }: { data: string; title: string }) {
             onClick={async () => {
               await axios.delete(`/api/${title}/${data}`);
               queryKeys.map((queryKey) =>
-                updatedData({ queryKey, id: data, remove: true })
+                updateData({ queryKey, id: data, remove: true })
               );
               router.back();
             }}

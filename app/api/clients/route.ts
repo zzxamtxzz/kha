@@ -55,8 +55,6 @@ export async function GET(request: NextRequest) {
     limit: size,
     order: [["created_at", "DESC"]],
   });
-  console.log("rows", rows.length);
-
   return Response.json({ data: rows, total: count });
 }
 
@@ -64,7 +62,7 @@ export async function POST(request: NextRequest) {
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
   const body = await request.json();
-  const { email, name, remark, edit } = body; // Assuming client_id is provided for editing
+  const { edit } = body;
 
   console.log("req.body", body);
 
@@ -86,32 +84,21 @@ export async function POST(request: NextRequest) {
         return Response.json({ error: "client not found" }, { status: 404 });
 
       if (client) {
-        client.email = email;
-        client.name = name;
-        client.remark = remark;
-        await client.save();
+        await client.update(body);
       }
     } else {
       // Create new client
-      client = await Client.create(
-        {
-          email,
-          name,
-          remark,
-          created_by_id: user.id,
-        },
-        {
-          include: {
-            model: User,
-            as: "created_by",
-            attributes: ["id", "email"],
-          },
-        }
-      );
-      await createUser({ ...body, client_id: client.id });
+      client = await Client.create(body, {});
     }
+    const response = await Client.findByPk(client.id, {
+      include: {
+        model: User,
+        as: "created_by",
+        attributes: ["id", "email"],
+      },
+    });
 
-    return Response.json(client);
+    return Response.json(response);
   } catch (error: any) {
     console.error("Error creating or updating client:", error);
     return Response.json({ error: error.message }, { status: 500 });

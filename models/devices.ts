@@ -1,9 +1,10 @@
 import sequelize from "@/lib/mysql";
 import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
-import BillModel from "./bill";
+import Bill from "./bill";
 import Client from "./client";
 import User from "./user";
+import DeviceEmail from "./device_email";
 
 class Device extends Model {
   public id!: string;
@@ -17,7 +18,7 @@ class Device extends Model {
   public created_by!: User;
   public is_public!: boolean;
   public last_bill_id!: number;
-  public lastBill!: BillModel;
+  public lastBill!: Bill;
   public created_by_id!: number;
   public client_id!: string;
   public client!: Client;
@@ -39,7 +40,7 @@ Device.init(
     is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
     last_bill_id: {
       type: DataTypes.UUID,
-      references: { model: BillModel, key: "id" },
+      references: { model: Bill, key: "id" },
     },
     client_id: {
       type: DataTypes.UUID,
@@ -60,11 +61,14 @@ Device.init(
   }
 );
 
-Device.hasMany(BillModel, { foreignKey: "device_id", as: "device" });
-BillModel.belongsTo(Device, { foreignKey: "device_id", as: "device" });
+Device.hasMany(DeviceEmail, { foreignKey: "device_id", as: "emails" });
+DeviceEmail.belongsTo(Device, { foreignKey: "device_id", as: "device" });
 
-Device.belongsTo(BillModel, { as: "lastBill", foreignKey: "last_bill_id" });
-BillModel.hasOne(Device, { as: "lastBill", foreignKey: "last_bill_id" });
+Device.hasMany(Bill, { foreignKey: "device_id", as: "device" });
+Bill.belongsTo(Device, { foreignKey: "device_id", as: "device" });
+
+Device.belongsTo(Bill, { as: "lastBill", foreignKey: "last_bill_id" });
+Bill.hasOne(Device, { as: "lastBill", foreignKey: "last_bill_id" });
 
 Device.belongsTo(User, { foreignKey: "created_by_id", as: "created_by" });
 

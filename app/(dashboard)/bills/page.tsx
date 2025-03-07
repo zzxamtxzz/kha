@@ -19,11 +19,7 @@ import CreateNewBill from "./choose/choosedevice";
 import BillsClient from "./client";
 import ImportDataWithExcelBills from "./import";
 
-async function Bills({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+async function Bills() {
   const user = await getUser();
   if (!user) return;
   const state = cookies().get("/billsstate")?.value || "";

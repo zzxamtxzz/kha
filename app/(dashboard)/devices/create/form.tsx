@@ -2,7 +2,6 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -11,28 +10,26 @@ import {
 import { Input } from "@/components/ui/input";
 import axios from "@/axios";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import Client from "@/models/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useMutateInfiniteData } from "../../../hooks/mutateInfinite";
-import { useInfiniteData } from "@/app/hooks/useInfiniteData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import Clients from "./clients";
+import Device from "@/models/devices";
+import { useMutateInfiniteData } from "@/app/hooks/mutateInfinite";
 
 const formSchema = z.object({
   email: z.string(),
+  emails: z.array(z.string().email()).optional(),
   client_id: z.string(),
   device_serial: z.string(),
   account_number: z.string(),
   kit_number: z.string(),
-  fee: z.number(),
   remark: z.string().optional().nullable(),
 });
 
@@ -40,35 +37,40 @@ const CreateDeviceClient = ({
   onSuccess,
   defaultValues,
 }: {
-  onSuccess: () => void;
+  onSuccess: (data?: Device) => void;
   defaultValues: any;
 }) => {
   const searchParams = useSearchParams();
-  const client_id = searchParams.get("client_id");
+  const edit = searchParams.get("edit");
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "emails",
+  });
+
   const { toast } = useToast();
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
   const queryCache = queryClient.getQueryCache();
   const queryKeys = queryCache
     .getAll()
     .map((query) => query.queryKey)
-    .filter((q) => q.includes("devices") && !q.includes("count"));
+    .filter((q) => q.includes("devices"));
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
       const response = await axios.post("/api/devices", values);
       const update = response.data;
-      queryKeys.map((queryKey) => updatedData({ ...update, queryKey }));
-      onSuccess();
+      queryKeys.map((queryKey) => updateData({ ...update, queryKey, edit }));
+      onSuccess(response.data);
       toast({
-        title: "Succes",
+        title: "Success",
         description: response.data.email + " device added successfully...",
       });
       setLoading(false);
@@ -89,9 +91,9 @@ const CreateDeviceClient = ({
         className="flex flex-col gap-2 p-4 w-[700px] mx-auto cart-bg shadow-sm rounded-lg"
       >
         <div className="relative">
-          <p className="font-bold text-lg text-center">Add New Device</p>
+          <p className="font-bold text-lg text-center">New Device</p>
           <Button
-            onClick={onSuccess}
+            onClick={() => onSuccess()}
             type="reset"
             className="w-8 h-8 rounded-full p-0 absolute right-1 top-0"
           >
@@ -111,6 +113,48 @@ const CreateDeviceClient = ({
             </FormItem>
           )}
         />{" "}
+        <FormField
+          control={form.control}
+          name="emails"
+          render={() => (
+            <FormItem>
+              <div className="flex items-center justify-between">
+                <FormLabel className="">Add other emails</FormLabel>
+                <Button
+                  size={"icon"}
+                  type="button"
+                  onClick={() => append("")}
+                  variant={"outline"}
+                >
+                  <Plus className="w-4" />
+                </Button>
+              </div>
+              {fields.map((item, index) => (
+                <FormField
+                  key={item.id}
+                  control={form.control}
+                  name={`emails.${index}`}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Input placeholder="New email" {...field} />
+                      </FormControl>
+                      <Button
+                        className=""
+                        size={"icon"}
+                        type="button"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash2 className="w-4" />
+                      </Button>
+                    </FormItem>
+                  )}
+                />
+              ))}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {!defaultValues.client_id && (
           <FormField
             control={form.control}
@@ -184,7 +228,7 @@ const CreateDeviceClient = ({
           )}
         />
         <Button disabled={loading} type="submit">
-          Create Client
+          Create
         </Button>
       </form>
     </Form>

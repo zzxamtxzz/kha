@@ -6,72 +6,66 @@ import { Plus, X } from "lucide-react";
 import { useRef, useState } from "react";
 import SpinLoading from "@/components/loadings/spinloading";
 import { Label } from "@/components/ui/label";
-import CreateClientForm from "../../clients/create/form";
-import Client from "@/models/client";
-import { useSheet2 } from "@/app/contexts/sheet2";
+import Device from "@/models/devices";
+import { usePopup } from "@/app/contexts/dialog";
+import CreateDeviceClient from "../../devices/create/form";
 
-function Clients({
+function Devices({
   onChange,
   value,
+  device,
 }: {
   onChange: (value: string) => void;
   value: string;
+  device?: Device;
 }) {
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [client, setClient] = useState<Client | null>(null);
+  const [choosePlan, setChoosePlan] = useState<Device | null>(device);
   const [inputValue, setInputValue] = useState("");
   const outSideRef = useRef(null);
+
   const {
-    loading,
-    data: clients,
+    data: devices,
     queryKey,
     count,
     lastElementRef,
-  } = useInfiniteData<Client>({
-    keys: "clients",
+  } = useInfiniteData<Device>({
+    keys: "devices",
     size: 20,
     params: { search: inputValue },
   });
 
+  const { setPopup, closeDialog } = usePopup();
   useClickOutside(outSideRef, () => setOpen(false));
-  const { setOpen: setSheet, setContent, setClassName } = useSheet2();
-  const openClient = () => {
-    console.log("open client");
-    setSheet(true);
-    setClassName("p-0 min-w-[600px]");
-    setContent(
-      <CreateClientForm
-        onSuccess={(client) => {
-          setSheet(false);
-          console.log("client", client);
-          if (client) {
-            setClient(client);
-            onChange(client.id);
-          }
-        }}
-        defaultValues={{ name: inputValue }}
-      />
-    );
+  const openPlan = () => {
+    setPopup({
+      title: "New plan",
+      children: (
+        <CreateDeviceClient
+          onSuccess={closeDialog}
+          defaultValues={{ name: inputValue }}
+        />
+      ),
+    });
   };
-
+  if (loading) return <SpinLoading />;
   return (
     <div className="relative">
-      {client ? (
+      {choosePlan ? (
         <div className="cart-bg rounded-lg shadow-md p-4">
           <div className="flex items-center justify-between">
-            <Label className="text-blue-500 text-lg">
-              {client.first_name} {client.last_name}
-            </Label>
+            <Label className="text-blue-500 text-lg">{choosePlan.email}</Label>
             <Button
               size={"icon"}
               variant={"outline"}
               className="w-6 h-6"
-              onClick={() => setClient(null)}
+              onClick={() => setChoosePlan(null)}
             >
               <X className="w-4" />
             </Button>
           </div>
-          <p>{client.email}</p>
+          <p>Device serial {choosePlan.device_serial}</p>
         </div>
       ) : (
         <div className="flex items-center justify-between w-full border rounded-md p-1 pl-2">
@@ -85,10 +79,10 @@ function Clients({
             }}
           />
           <Button
-            onClick={openClient}
             type="button"
             className="p-1"
             size={"icon"}
+            onClick={openPlan}
           >
             <Plus className="w-4" />
           </Button>
@@ -97,27 +91,28 @@ function Clients({
       {open && (
         <div
           ref={outSideRef}
-          className="p-1 absolute cart-bg w-[600px] max-h-[250px] overflow-y-auto border z-10 rounded-lg shadow-md"
+          className="p-1 absolute cart-bg w-[600px] h-[200px] overflow-y-auto border z-10 rounded-lg shadow-md"
         >
-          {!clients.length && (
+          {!devices.length && (
             <ShowNoText className="flex flex-col gap-2">
               {loading ? <SpinLoading className="" /> : "Nothing found"}
-              <Button onClick={openClient} type="button">
-                Create plan
+              <Button type="button" onClick={openPlan}>
+                Create Device
               </Button>
             </ShowNoText>
           )}
-          {clients.map((client, index) => (
+          {devices.map((data, index) => (
             <div
+              ref={lastElementRef}
               className="p-2 hover rounded-sm"
               onClick={() => {
-                onChange(client.id);
-                setClient(client);
+                onChange(data.id);
+                setChoosePlan(data);
                 setOpen(false);
               }}
               key={index}
             >
-              {client.first_name} {client.last_name}
+              {data.client?.name || data.email}
             </div>
           ))}
         </div>
@@ -126,4 +121,4 @@ function Clients({
   );
 }
 
-export default Clients;
+export default Devices;

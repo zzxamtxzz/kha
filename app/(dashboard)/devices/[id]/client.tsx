@@ -1,7 +1,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import Device from "@/models/devices";
 import User from "@/models/user";
 import Link from "next/link";
@@ -14,13 +14,13 @@ async function DeviceDetailPage({ params }: { params: { id: string } }) {
   const device = await Device.findByPk(params.id, {
     include: [
       { model: User, as: "created_by", attributes: ["id", "email"] },
-      { model: BillModel, as: "lastBill" },
+      { model: Bill, as: "lastBill" },
     ],
   });
 
   if (!device) notFound();
 
-  const bills = await BillModel.findAll({ where: { device_id: device.id } });
+  const bills = await Bill.findAll({ where: { device_id: device.id } });
   return (
     <div className="w-full h-full p-8">
       <Card className="max-w-[700px] mx-auto p-0 w-full min-h-full">

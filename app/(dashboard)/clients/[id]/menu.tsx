@@ -19,7 +19,7 @@ import { useMutateInfiniteData } from "../../../hooks/mutateInfinite";
 
 export function ClientMenu({ data, title }: { data: string; title: string }) {
   const router = useRouter();
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -44,7 +44,7 @@ export function ClientMenu({ data, title }: { data: string; title: string }) {
             onClick={async () => {
               await axios.delete(`/api/${title}/${data}`);
               queryKeys.map((queryKey) =>
-                updatedData({ queryKey, id: data, remove: true })
+                updateData({ queryKey, id: data, remove: true })
               );
               router.back();
             }}

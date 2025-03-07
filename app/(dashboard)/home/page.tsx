@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import Client from "@/models/client";
 import Device from "@/models/devices";
 import User from "@/models/user";
@@ -31,7 +31,7 @@ export default async function Home() {
       { model: User, as: "created_by", attributes: ["name", "email"] },
       { model: Client, as: "client", attributes: ["name", "email"] },
       {
-        model: BillModel,
+        model: Bill,
         as: "lastBill",
         attributes: ["billing_date", "duration_month"],
         where: literal(`billing_date + INTERVAL duration_month MONTH < NOW()`),

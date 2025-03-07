@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Plan from "@/models/billplan";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -36,7 +37,7 @@ const PlanForm = ({
   onSuccess,
 }: {
   defaultValues: any;
-  onSuccess: () => void;
+  onSuccess: (plan?: Plan) => void;
 }) => {
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,7 +45,7 @@ const PlanForm = ({
     defaultValues,
   });
   const { toast } = useToast();
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
   const queryCache = queryClient.getQueryCache();
   const queryKeys = queryCache
@@ -58,9 +59,9 @@ const PlanForm = ({
       const response = await axios.post("/api/plans", values);
       console.log("Plan created:", response.data);
       queryKeys.map((queryKey) =>
-        updatedData({ ...response.data, new: true, queryKey })
+        updateData({ ...response.data, new: true, queryKey })
       );
-      onSuccess();
+      onSuccess(response.data);
     } catch (error: any) {
       console.error("Error:", error);
       toast({
@@ -76,8 +77,19 @@ const PlanForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col gap-2 w-full mx-auto cart-bg shadow-sm rounded-lg"
+        className="flex flex-col gap-2 w-full mx-auto cart-bg shadow-sm rounded-lg p-2"
       >
+        <div className="flex items-center justify-between">
+          <h1 className="font-bold text-lg">New Plan</h1>
+          <Button
+            type="button"
+            variant={"outline"}
+            size={"icon"}
+            onClick={onSuccess}
+          >
+            <X />
+          </Button>
+        </div>
         <FormField
           control={form.control}
           name="name"

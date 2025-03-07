@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import Device from "@/models/devices";
 import { NextRequest } from "next/server";
 
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
           const { id } = bill;
           let exist = null;
           if (id) {
-            exist = await BillModel.findOne({
+            exist = await Bill.findOne({
               where: { id },
             });
           }
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             await exist.update(bill);
             return exist;
           } else {
-            const response = await BillModel.create(bill);
+            const response = await Bill.create(bill);
             return response;
           }
         })

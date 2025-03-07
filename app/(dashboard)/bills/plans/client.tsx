@@ -2,7 +2,7 @@
 import { useInfiniteData } from "@/app/hooks/useInfiniteData";
 import ShowNoText from "@/components/app/nodata";
 import SpinLoading from "@/components/loadings/spinloading";
-import PlanModel from "@/models/billplan";
+import Plan from "@/models/billplan";
 import { useSearchParams } from "next/navigation";
 import PlansHeaders from "./header";
 
@@ -17,7 +17,7 @@ function BillPlansClient({ state: s }: { state: string }) {
     queryKey,
     count,
     lastElementRef,
-  } = useInfiniteData<PlanModel>({
+  } = useInfiniteData<Plan>({
     keys: "plans",
     size: 20,
     params: { search },

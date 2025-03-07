@@ -1,4 +1,5 @@
-import { getUser } from "@/auth/user";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -6,11 +7,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChevronDown, History, Radio, Trash, UsersRound } from "lucide-react";
+import { History, Moon, Radio, Sun, Trash, UsersRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import List from "./list";
 import Logout from "./logout";
+import { useHasUser } from "@/app/contexts/user";
+import { useTheme } from "@/app/contexts/theme";
 
 const sidebarRoutes = [
   { name: "clients", path: "/clients", icon: <UsersRound className="w-4" /> },
@@ -20,35 +22,44 @@ const sidebarRoutes = [
   { name: "trashes", path: "/trashes", icon: <Trash className="w-4" /> },
 ];
 
-async function Navigation() {
-  const user = await getUser();
-  if (!user) return;
+function Navigation() {
+  const { user } = useHasUser();
+  const { theme, toggleTheme } = useTheme();
   const profile = user.profile
     ? ``
     : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   return (
-    <div className="h-14 p-1 shadow-sm flex items-center justify-between cart-bg">
+    <div className="h-14 p-1 shadow-md flex items-center justify-between cart-bg">
       <Link href="/" className="font-bold text-lg px-2">
         {/* Limitless Myanmar */}
       </Link>
       <Sheet>
-        <SheetTrigger asChild>
+        <div className="flex gap-2 items-center px-4">
           <Button
+            size={"icon"}
             variant={"outline"}
-            className="relative rounded-lg w-auto h-auto p-1"
+            className="border-none w-8 h-8"
+            onClick={() => {
+              toggleTheme(theme === "light" ? "dark" : "light");
+            }}
           >
+            {theme === "light" ? (
+              <Moon className="w-4" />
+            ) : (
+              <Sun className="w-4" />
+            )}
+          </Button>
+          <SheetTrigger asChild>
             <Image
               src={profile}
-              width={40}
-              height={40}
+              width={30}
+              height={30}
               alt="@profile"
               className="rounded-full"
             />
-            <p className="font-semibold px-2">{user.name}</p>
-            <ChevronDown className="w-4 bottom-0 right-0" />
-          </Button>
-        </SheetTrigger>
+          </SheetTrigger>
+        </div>
         <SheetContent>
           <ul className="mt-4 flex flex-col">
             {sidebarRoutes.map((route, index) => {

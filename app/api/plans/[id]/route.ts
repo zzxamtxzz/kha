@@ -1,5 +1,5 @@
 import { getUser } from "@/auth/user";
-import PlanModel from "@/models/billplan";
+import Plan from "@/models/billplan";
 import { NextRequest } from "next/server";
 
 export async function DELETE(
@@ -10,7 +10,7 @@ export async function DELETE(
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
 
   try {
-    await PlanModel.destroy({
+    await Plan.destroy({
       where: { id: params.id },
     });
 

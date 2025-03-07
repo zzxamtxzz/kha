@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 
@@ -62,6 +62,17 @@ function SearchInput({ className }: { className?: string }) {
         autoFocus
         className="w-full border pl-10 h-[36px] pr-4 rounded-[4px] py-2 focus:border-[#293943] cart-bg transition-all duration-100"
       />
+      {(search || searchParams?.get("search")) && (
+        <Trash2
+          onClick={() => {
+            setSearch("");
+            const currentParams = new URLSearchParams(searchParams?.toString());
+            currentParams.delete("search");
+            router.push(`${pathname}?${currentParams.toString()}`);
+          }}
+          className="w-4 absolute top-0 bottom-0 my-auto right-4 cursor-pointer text-red-500"
+        />
+      )}
     </div>
   );
 }

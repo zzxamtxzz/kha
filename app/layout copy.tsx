@@ -1,6 +1,6 @@
 import { getUser } from "@/auth/user";
 import sequelize from "@/lib/mysql";
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import Client from "@/models/client";
 import TableColumn from "@/models/column";
 import Device from "@/models/devices";
@@ -15,7 +15,6 @@ import { CustomQueryClientProvider } from "./contexts/tanstack";
 import { HasUserProvider } from "./contexts/user";
 import { VisitorProvider } from "./contexts/visitor";
 import "./globals.css";
-import "./index.css";
 import Login from "./login/page";
 
 const geistSans = localFont({
@@ -65,7 +64,7 @@ export default async function RootLayout({
   Device.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
-  BillModel.count({ where: { is_public: true } }).catch((err) =>
+  Bill.count({ where: { is_public: true } }).catch((err) =>
     console.log("error")
   );
   TableColumn.count({ where: { is_public: true } }).catch((err) =>

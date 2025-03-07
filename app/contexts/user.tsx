@@ -3,6 +3,8 @@ import User from "@/models/user";
 import { ReactNode, createContext, useContext } from "react";
 import { SheetProvider } from "./sheet";
 import { PopupProvider } from "./dialog";
+import { SheetProvider2 } from "./sheet2";
+import { ThemeProvider } from "./theme";
 
 const HasUserContext = createContext<{
   user: User;
@@ -24,9 +26,13 @@ export function HasUserProvider({
 
   return (
     <HasUserContext.Provider value={{ user }}>
-      <PopupProvider>
-        <SheetProvider>{children}</SheetProvider>
-      </PopupProvider>
+      <ThemeProvider>
+        <PopupProvider>
+          <SheetProvider2>
+            <SheetProvider>{children}</SheetProvider>
+          </SheetProvider2>
+        </PopupProvider>
+      </ThemeProvider>
     </HasUserContext.Provider>
   );
 }

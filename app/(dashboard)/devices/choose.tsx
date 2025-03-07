@@ -24,7 +24,7 @@ function ChooseClients({ device }: { device: Device }) {
     },
   });
 
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
   const queryCache = queryClient.getQueryCache();
   const queryKeys = queryCache
@@ -47,7 +47,7 @@ function ChooseClients({ device }: { device: Device }) {
               client: data.data.find((d) => d.id.toString() === value),
             };
 
-            updatedData(update);
+            updateData(update);
           });
         } catch (error: any) {
           toast({

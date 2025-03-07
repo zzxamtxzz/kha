@@ -71,7 +71,7 @@ export function PopupProvider({ children }: { children: ReactNode }) {
       {children}
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent
-          className={cn("max-w-[700px] w-[90%] p-0", popup.className)}
+          className={cn("max-w-[700px] p-0", popup.className)}
         >
           {popup.children}
         </AlertDialogContent>

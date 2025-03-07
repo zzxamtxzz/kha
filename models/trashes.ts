@@ -1,7 +1,7 @@
 import sequelize from "@/lib/mysql";
 import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
-import BillModel from "./bill";
+import Bill from "./bill";
 import Client from "./client";
 import Device from "./devices";
 import User from "./user";
@@ -17,7 +17,7 @@ class TrashModel extends Model {
   public created_at!: Date; // Adjust the type as needed
   public updated_at!: Date; // Adjust the type as needed
   public client!: Client; // Adjust the type as needed
-  public bill!: BillModel; // Adjust the type as needed
+  public bill!: Bill; // Adjust the type as needed
   public device!: Device; // Adjust the type as needed
 }
 
@@ -65,7 +65,7 @@ TrashModel.belongsTo(Client, {
   constraints: false,
   as: "client",
 });
-TrashModel.belongsTo(BillModel, {
+TrashModel.belongsTo(Bill, {
   foreignKey: "content_id",
   constraints: false,
   as: "bill",
@@ -81,10 +81,10 @@ Client.hasMany(TrashModel, {
   constraints: false,
   scope: { contentType: "ClientModel" },
 });
-BillModel.hasMany(TrashModel, {
+Bill.hasMany(TrashModel, {
   foreignKey: "content_id",
   constraints: false,
-  scope: { contentType: "BillModel" },
+  scope: { contentType: "Bill" },
 });
 
 export default TrashModel;

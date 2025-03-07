@@ -29,11 +29,7 @@ UpdateModel.init(
     content_id: { type: DataTypes.UUID },
     user_id: {
       type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "users", // Assumes you have an Employee model
-        key: "id",
-      },
+      references: { model: "users", key: "id" },
     },
   },
   {
@@ -42,8 +38,8 @@ UpdateModel.init(
     tableName: "updates",
     timestamps: true,
     freezeTableName: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    createdAt: "created_at",
+    updatedAt: "updated_at",
   }
 );
 

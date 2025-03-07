@@ -17,8 +17,12 @@ export const getDeviceQuery = ({
     where[Op.or] = [
       { device_serial: { [Op.like]: `%${search}%` } },
       { account_number: { [Op.like]: `%${search}%` } },
+      { kit_number: { [Op.like]: `%${search}%` } },
       { email: { [Op.like]: `%${search}%` } },
       { remark: { [Op.like]: `%${search}%` } },
+      { "$client.name$": { [Op.like]: `%${search}%` } },
+      { "$client.first_name$": { [Op.like]: `%${search}%` } },
+      { "$client.last_name$": { [Op.like]: `%${search}%` } },
     ];
   }
 

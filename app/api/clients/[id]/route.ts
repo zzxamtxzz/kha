@@ -1,9 +1,21 @@
-import { saveRemoveData, saveupdatedData } from "@/actions/update";
+import { saveRemoveData, saveupdateData } from "@/actions/update";
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
 import Device from "@/models/devices";
 import User from "@/models/user";
 import { NextRequest } from "next/server";
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const user = await getUser();
+  if (!user) return Response.json({ error: "user not found" }, { status: 404 });
+  const response = await Client.findByPk(params.id);
+  if (!response)
+    return Response.json({ message: "Client is not found" }, { status: 404 });
+  return Response.json(response);
+}
 
 export async function PUT(
   request: NextRequest,
@@ -38,7 +50,7 @@ export async function PUT(
       });
 
       if (updatedClient) {
-        saveupdatedData({
+        saveupdateData({
           title: "Client",
           content_id: updatedClient.id,
           fromModel: "clients",

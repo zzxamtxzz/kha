@@ -6,11 +6,13 @@ import Client from "./client";
 class User extends Model {
   public id!: string;
   public name!: string;
+  public username!: string;
   public role!: "admin" | "user";
   public email!: string;
-  public password!: string; // Add this line
-  public profile!: any; // Add this line
+  public password!: string;
+  public profile!: any;
   public active!: boolean;
+  public token?: string;
   public is_public!: boolean;
   public client_id!: string;
   public client!: Client;
@@ -44,8 +46,8 @@ User.init(
     modelName: "User",
     tableName: "users",
     freezeTableName: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    createdAt: "created_at",
+    updatedAt: "updated_at",
     defaultScope: {
       attributes: { exclude: ["password"] },
     },

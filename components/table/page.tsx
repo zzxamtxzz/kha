@@ -13,8 +13,8 @@ import { Checkbox } from "../ui/checkbox";
 import CustomTableColumn from "./columns";
 
 export type ColumnType<T> = {
-  name?: string;
-  id?: string;
+  name: string;
+  id: string;
   cell?: ({
     index,
     value,
@@ -29,7 +29,7 @@ export type TableType<T> = {
   skip?: (keyof T)[];
   className?: string;
   loading?: boolean;
-  columnNames?: string[];
+  columnNames: string[];
 };
 
 function DynamicTable<T extends { id: string; name?: string }>({
@@ -49,7 +49,7 @@ function DynamicTable<T extends { id: string; name?: string }>({
 
   const { toast } = useToast();
 
-  const { updatedData } = useMutateInfiniteData();
+  const { updateData } = useMutateInfiniteData();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -86,7 +86,7 @@ function DynamicTable<T extends { id: string; name?: string }>({
                   });
                   queryKeys.forEach((queryKey) => {
                     checks.map((id) =>
-                      updatedData({ queryKey, id, remove: true })
+                      updateData({ queryKey, id, remove: true })
                     );
                   });
                   toast({ title: "Success", description: "Delete successful" });

@@ -1,10 +1,10 @@
-import BillModel from "@/models/bill";
+import Bill from "@/models/bill";
 import Client from "@/models/client";
 import Device from "@/models/devices";
 import TrashModel from "@/models/trashes";
 import UpdateModel from "@/models/updated";
 
-export const saveupdatedData = async ({
+export const saveupdateData = async ({
   title,
   fromModel,
   content_id,

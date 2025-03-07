@@ -1,34 +1,27 @@
 import { useInfiniteData } from "@/app/hooks/useInfiniteData";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import ShowNoText from "@/components/app/nodata";
 import { Button } from "@/components/ui/button";
 import useClickOutside from "@/hooks/outside";
-import PlanModel from "@/models/billplan";
+import Plan from "@/models/billplan";
 import { Plus, X } from "lucide-react";
 import { useRef, useState } from "react";
 import CreatePlanClient from "../plans/create/form";
 import SpinLoading from "@/components/loadings/spinloading";
-import { useSheet } from "@/app/contexts/sheet";
 import { Label } from "@/components/ui/label";
+import { usePopup } from "@/app/contexts/dialog";
 
 function Plans({
   onChange,
   value,
+  plan,
 }: {
   onChange: (value: string) => void;
   value: string;
+  plan?: Plan;
 }) {
   const [open, setOpen] = useState(false);
-  const [choosePlan, setChoosePlan] = useState<PlanModel | null>(null);
+  const [choosePlan, setChoosePlan] = useState<Plan | null>(plan);
   const [inputValue, setInputValue] = useState("");
-  const { setOpen: setSheet, setContent, closeSheet } = useSheet();
   const outSideRef = useRef(null);
   const {
     loading,
@@ -36,26 +29,30 @@ function Plans({
     queryKey,
     count,
     lastElementRef,
-  } = useInfiniteData<PlanModel>({
+  } = useInfiniteData<Plan>({
     keys: "plans",
     size: 20,
     params: { search: inputValue },
   });
 
+  const { setPopup, closeDialog } = usePopup();
   useClickOutside(outSideRef, () => setOpen(false));
   const openPlan = () => {
-    setContent(
-      <>
-        <SheetHeader className="mb-2">
-          <SheetTitle>New plan</SheetTitle>
-        </SheetHeader>
+    setPopup({
+      title: "Create plan",
+      children: (
         <CreatePlanClient
-          onSuccess={closeSheet}
+          onSuccess={(plan) => {
+            closeDialog();
+            if (plan) {
+              setChoosePlan(plan);
+              onChange(plan.id);
+            }
+          }}
           defaultValues={{ name: inputValue }}
         />
-      </>
-    );
-    setSheet(true);
+      ),
+    });
   };
   return (
     <div className="relative">

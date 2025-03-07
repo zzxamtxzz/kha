@@ -1,42 +1,41 @@
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 
-type updatedDataType<T> = T & {
-  queryKey: QueryKey;
-  new?: true;
-  remove?: true;
-};
-
-export function useMutateInfiniteData<T extends { id: string }>() {
+export function useMutateInfiniteData<
+  T extends { id: string; queryKey: QueryKey; new?: true; remove?: true },
+>() {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
-    mutationFn: async (data: updatedDataType<T>) => data,
-    onSuccess: (data: updatedDataType<T>) => {
-      const infiniteData = queryClient.getQueryData(data.queryKey) as {
-        pages: T[][];
+    mutationFn: async (data: T) => data,
+    onSuccess: (data: T) => {
+      const existData = queryClient.getQueryData(data.queryKey) as {
+        pages: { total: number; data: T[] }[];
         pageParams: number[];
       };
       console.log("new data", data);
       const newAttendances = {
-        ...infiniteData,
+        ...existData,
         pages: data.new
-          ? infiniteData.pages.map((page, index) =>
-              index === infiniteData.pages.length - 1 ? [data, ...page] : page
+          ? existData.pages.map((page, index) =>
+              index === existData.pages.length - 1
+                ? { total: page.total + 1, data: [data, ...page.data] }
+                : page
             )
           : data.remove
-          ? infiniteData.pages.map((page) =>
-              page.filter((s) => s.id !== data.id)
-            )
-          : infiniteData.pages.map((page) =>
-              page.map((s) =>
-                s.id.toString() === data.id.toString() ? data : s
-              )
-            ),
+            ? existData.pages.map((page) => ({
+                total: page.total - 1,
+                data: page.data.filter((s) => s.id !== data.id),
+              }))
+            : existData.pages.map((page) => ({
+                ...page,
+                data: page.data.map((s) => (s.id === data.id ? data : s)),
+              })),
       };
 
-      if (infiniteData) queryClient.setQueryData(data.queryKey, newAttendances);
+      if (existData) queryClient.setQueryData(data.queryKey, newAttendances);
     },
   });
-  const updatedData = (data: updatedDataType<T>) => mutate(data);
 
-  return { updatedData };
+  const updateData = (data: T) => mutate(data);
+
+  return { updateData };
 }
