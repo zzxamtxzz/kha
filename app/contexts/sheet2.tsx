@@ -53,7 +53,12 @@ export function SheetProvider2({ children }: { children: ReactNode }) {
     >
       <Sheet open={open} onOpenChange={setOpen}>
         {children}
-        <SheetContent className={cn("p-0", className)}>{content}</SheetContent>
+        <SheetContent
+          onInteractOutside={(event) => event.preventDefault()}
+          className={cn("p-0", className)}
+        >
+          {content}
+        </SheetContent>
       </Sheet>
     </SheetContext.Provider>
   );

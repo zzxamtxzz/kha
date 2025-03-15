@@ -5,11 +5,11 @@ import { SheetProvider } from "./sheet";
 import { PopupProvider } from "./dialog";
 import { SheetProvider2 } from "./sheet2";
 import { ThemeProvider } from "./theme";
+import { Toaster } from "@/components/ui/toaster";
 
 const HasUserContext = createContext<{
   user: User;
-  //@ts-ignore
-}>({ user: {} });
+}>({ user: {} as unknown as User });
 
 export function useHasUser() {
   return useContext(HasUserContext);
@@ -27,11 +27,12 @@ export function HasUserProvider({
   return (
     <HasUserContext.Provider value={{ user }}>
       <ThemeProvider>
-        <PopupProvider>
-          <SheetProvider2>
+        <SheetProvider2>
+          <PopupProvider>
             <SheetProvider>{children}</SheetProvider>
-          </SheetProvider2>
-        </PopupProvider>
+          </PopupProvider>
+          <Toaster />
+        </SheetProvider2>
       </ThemeProvider>
     </HasUserContext.Provider>
   );

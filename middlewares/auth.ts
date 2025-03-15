@@ -1,6 +1,8 @@
 import Session from "@/models/session";
 import jwt from "jsonwebtoken";
 
+const env = process.env.NODE_ENV === "development";
+
 export const authMiddleware = async (sessionId: string) => {
   let session;
   try {
@@ -8,7 +10,7 @@ export const authMiddleware = async (sessionId: string) => {
   } catch (error) {}
 
   if (!session) return false;
-  const sessionData = JSON.parse(session.session);
+  const sessionData = env ? JSON.parse(session.session) : session.session;
   let sub;
 
   try {

@@ -17,11 +17,9 @@ function DeviceTrashItem({
   const queryClient = useQueryClient();
   const { toast } = useToast();
   return (
-    <div className="cart-bg rounded-lg p-2">
+    <div className="card-bg rounded-lg p-2">
       <div className="flex items-center justify-between">
-        <p className="font-semibold">
-          {trash.device.name || trash.device.email}
-        </p>
+        <p className="font-semibold">{trash.device.email}</p>
         <Button
           disabled={loading}
           onClick={async () => {

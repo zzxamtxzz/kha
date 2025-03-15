@@ -17,7 +17,7 @@ export default async function middleware(
 
   // no need to login
   if (session && url.pathname === "/login") {
-    url.pathname = "/";
+    url.pathname = "/home";
     const response = NextResponse.redirect(url);
     return await updateSession(request, response);
   }

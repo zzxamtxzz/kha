@@ -1,29 +1,32 @@
 "use client";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { useState, type FC, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { ReactNode, useState } from "react";
 
-interface ModalProps {
+export function SheetModal({
+  children,
+  className,
+}: {
   children: ReactNode;
   className?: string;
-}
-
-export const SheetModal: FC<ModalProps> = ({ children, className }) => {
+}) {
   const [open, setOpen] = useState(true);
-  const router = useRouter();
 
+  const router = useRouter();
   return (
     <Sheet
-      open
+      open={open}
       onOpenChange={(open) => {
-        setOpen(open);
-        router.back();
+        if (!open) router.back();
       }}
     >
-      <SheetContent className={cn("p-0 min-w-[700px]", className)}>
+      <SheetContent
+        // onInteractOutside={(event) => {}}
+        className={cn("p-0", className)}
+      >
         {children}
       </SheetContent>
     </Sheet>
   );
-};
+}

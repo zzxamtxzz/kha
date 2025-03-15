@@ -1,9 +1,9 @@
 "use client";
 
+import { useInfiniteData } from "@/app/hooks/use-infinite-data";
 import { Input } from "@/components/ui/input";
 import TrashModel from "@/models/trashes";
 import { useState } from "react";
-import { useInfiniteData } from "../../../hooks/useInfiniteData";
 import ClientTrashItem from "./item";
 
 function TrashesClients() {

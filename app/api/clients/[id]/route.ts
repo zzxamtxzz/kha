@@ -1,4 +1,4 @@
-import { saveRemoveData, saveupdateData } from "@/actions/update";
+import { saveRemoveData, saveUpdateData } from "@/actions/update";
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
 import Device from "@/models/devices";
@@ -11,7 +11,16 @@ export async function GET(
 ) {
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
-  const response = await Client.findByPk(params.id);
+  const response = await Client.findByPk(params.id, {
+    include: [
+      { model: User, as: "created_by", attributes: ["id", "name", "username"] },
+      {
+        model: Device,
+        as: "devices",
+        attributes: ["id", "first_name", "last_name", "email"],
+      },
+    ],
+  });
   if (!response)
     return Response.json({ message: "Client is not found" }, { status: 404 });
   return Response.json(response);
@@ -39,7 +48,7 @@ export async function PUT(
           {
             model: User,
             as: "created_by",
-            attributes: ["id", "email", "name"],
+            attributes: ["id", "name", "username"],
           },
           {
             model: Device,
@@ -50,7 +59,7 @@ export async function PUT(
       });
 
       if (updatedClient) {
-        saveupdateData({
+        saveUpdateData({
           title: "Client",
           content_id: updatedClient.id,
           fromModel: "clients",

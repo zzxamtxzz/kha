@@ -1,5 +1,7 @@
-function Dashboard() {
-  return <div>Dashboard</div>;
+import HomePage from "./home/page";
+
+function Home() {
+  return <HomePage />;
 }
 
-export default Dashboard;
+export default Home;

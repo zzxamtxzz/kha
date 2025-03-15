@@ -3,14 +3,13 @@ import MapLink from "@/components/map";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import User from "@/models/user";
 import Visitor from "@/models/visitior";
-import { ADMIN } from "@/roles";
 import dayjs from "dayjs";
 
 async function Histories() {
   const user = await getUser();
   if (!user) return;
   const query: any = { is_public: true };
-  if (ADMIN !== user.role) {
+  if (!user.super_admin) {
     query.user_id = user.id;
   }
   const visitors = await Visitor.findAll({

@@ -1,5 +1,6 @@
-import { saveRemoveData, saveupdateData } from "@/actions/update";
+import { saveRemoveData, saveUpdateData } from "@/actions/update";
 import { getUser } from "@/auth/user";
+import Bill from "@/models/bill";
 import Client from "@/models/client";
 import Device from "@/models/devices";
 import User from "@/models/user";
@@ -11,7 +12,13 @@ export async function GET(
 ) {
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
-  const response = await Device.findByPk(params.id);
+  const response = await Device.findByPk(params.id, {
+    include: [
+      { model: Client, as: "client" },
+      { model: User, as: "created_by", attributes: ["id", "name", "username"] },
+      { model: Bill, as: "bills" },
+    ],
+  });
   if (!response)
     return Response.json({ message: "Device is not found" }, { status: 404 });
   return Response.json(response);
@@ -58,19 +65,19 @@ export async function PUT(
         {
           model: User,
           as: "created_by",
-          attributes: ["name", "email"],
+          attributes: ["id", "name", "username"],
         },
         {
           model: Client,
           as: "client",
-          attributes: ["name", "email"],
+          attributes: ["name", "email", "id"],
         },
       ],
     });
     if (!device) return Response.json({ error: "not found" }, { status: 404 });
 
-    saveupdateData({
-      title: "Device",
+    saveUpdateData({
+      title: "devices",
       content_id: device.id,
       fromModel: "devices",
       user_id: user.id,
@@ -79,7 +86,29 @@ export async function PUT(
 
     await device.update(body);
 
-    return Response.json({ message: "updated" });
+    const response = await Device.findByPk(device.id, {
+      include: [
+        {
+          model: User,
+          as: "created_by",
+          attributes: ["id", "name", "username"],
+        },
+        {
+          model: Client,
+          as: "client",
+          attributes: ["name", "email", "id"],
+        },
+        {
+          model: Bill,
+          as: "lastBill",
+          where: { is_public: true },
+          attributes: ["billing_date", "duration_month"],
+          required: false,
+        },
+      ],
+    });
+
+    return Response.json(response);
   } catch (error: any) {
     return Response.json({ error: error.message }, { status: 500 });
   }

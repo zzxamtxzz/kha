@@ -1,18 +1,21 @@
 import sequelize from "@/lib/mysql";
 import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
+import Device from "./devices";
 import User from "./user";
 
 class Client extends Model {
   public id!: string;
   public email!: string;
   public name!: string;
-  public first_name!: string;
-  public last_name!: string;
   public remark!: string;
   public created_by_id!: string;
+  public phone_number!: string;
+  public address!: string;
   public created_by!: User;
+  public devices!: Device[];
   public created_at!: Date;
+  public updated_at!: Date;
   public is_public!: boolean;
   public deviceCount!: number;
   public user!: User;
@@ -29,8 +32,6 @@ Client.init(
     },
     email: { type: DataTypes.STRING },
     name: { type: DataTypes.STRING },
-    first_name: { type: DataTypes.STRING },
-    last_name: { type: DataTypes.STRING },
     phone_number: { type: DataTypes.STRING },
     remark: { type: DataTypes.STRING },
     address: { type: DataTypes.STRING },
@@ -50,5 +51,7 @@ Client.init(
     updatedAt: "updated_at",
   }
 );
+
+Client.belongsTo(User, { foreignKey: "created_by_id", as: "created_by" });
 
 export default Client;

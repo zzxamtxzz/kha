@@ -1,0 +1,44 @@
+import sequelize from "@/lib/mysql";
+import { generateSecureRandomId } from "@/lib/utils";
+import { DataTypes, Model } from "sequelize";
+import User from "./user";
+
+class Currency extends Model {
+  public id!: string;
+  public name!: string;
+  public symbol!: string;
+  public remark!: string;
+  public created_by_id!: string;
+  public is_public!: boolean;
+}
+
+Currency.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: () => generateSecureRandomId(15),
+      primaryKey: true,
+    },
+    name: { type: DataTypes.STRING },
+    symbol: { type: DataTypes.STRING },
+    remark: { type: DataTypes.STRING },
+    use_as_default: { type: DataTypes.BOOLEAN, defaultValue: false },
+    is_public: { type: DataTypes.BOOLEAN, defaultValue: true },
+    created_by_id: {
+      type: DataTypes.UUID,
+      references: { model: "users", key: "id" },
+    },
+  },
+  {
+    sequelize,
+    modelName: "Currency",
+    tableName: "currencies",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
+);
+
+Currency.belongsTo(User, { foreignKey: "created_by_id", as: "created_by" });
+
+export default Currency;

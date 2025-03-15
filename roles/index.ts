@@ -13,10 +13,10 @@ export const actions = {
 export const roles = [
   {
     name: "user",
-    home: [actions.READ],
-    devices: [actions.READ],
-    bills: [actions.READ, actions.CREATE],
-    plans: [actions.READ],
+    home: ["read"],
+    devices: ["read"],
+    bills: ["read", "create"],
+    plans: ["read"],
   },
 ];
 

@@ -3,6 +3,7 @@ import { DataTypes, Model } from "sequelize";
 import { generateSecureRandomId } from "@/lib/utils";
 import User from "./user";
 import Bill from "./bill";
+import Status from "./statuses";
 
 class EventTracking extends Model {
   public id!: string;
@@ -11,7 +12,8 @@ class EventTracking extends Model {
   public description!: string;
   public event_date!: Date;
   public event_type!: "status" | "comment" | "task" | "file";
-  public status!: string;
+  public status_id!: string;
+  public status!: Status;
   public notes!: string;
   public created_by_id!: string;
   public created_by!: User;
@@ -31,7 +33,11 @@ EventTracking.init(
     event_name: { type: DataTypes.STRING, allowNull: false },
     from: { type: DataTypes.UUID, allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: true },
-    status: { type: DataTypes.STRING, allowNull: true },
+    status_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: { model: "statuses", key: "id" },
+    },
     notes: { type: DataTypes.TEXT, allowNull: true },
     created_by_id: {
       type: DataTypes.UUID,
@@ -49,6 +55,7 @@ EventTracking.init(
   }
 );
 
+EventTracking.belongsTo(Status, { foreignKey: "status_id", as: "status" });
 EventTracking.belongsTo(User, {
   foreignKey: "created_by_id",
   as: "created_by",

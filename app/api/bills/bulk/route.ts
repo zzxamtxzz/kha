@@ -63,9 +63,9 @@ export async function POST(request: NextRequest) {
 //     return {
 //       email: i.email,
 //       name: i.name,
-//       device_serial: i.device_serial,
-//       account_number: i.account_number,
-//       kit_number: i.kit_number,
+//       snNo: i.snNo,
+//       accNo: i.accNo,
+//       kitNo: i.kitNo,
 //       fee: i.fee,
 //       remark: i.remark,
 //       client_id: client?.id,

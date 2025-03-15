@@ -9,11 +9,13 @@ import { redirect } from "next/navigation";
 import { Op } from "sequelize";
 import { generateRefreshToken, generateToken } from "./token";
 
-export async function login(state: any, formData: FormData) {
-  const data = {
-    username: formData.get("username") as string,
-    password: formData.get("password") as string,
-  };
+export async function login(data: { username: string; password: string }) {
+  // const data = {
+  //   username: formData.get("username") as string,
+  //   password: formData.get("password") as string,
+  // };
+
+  console.log("data", data);
 
   try {
     const user = (
@@ -43,10 +45,11 @@ export async function login(state: any, formData: FormData) {
     });
 
     await createSession(session.id);
+    return { success: true };
   } catch (error) {
-    return console.log("error", error);
+    console.log("error", error);
+    return { error: "An error occurred during login" };
   }
-  redirect("/home");
 }
 
 export async function logout() {

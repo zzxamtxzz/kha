@@ -1,0 +1,7 @@
+/* styles.css */
+.background {
+  background-image: url("/residential_b_hero_d.webp");
+  background-size: cover; /* Ensure the image covers the entire area */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+}

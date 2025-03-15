@@ -60,20 +60,6 @@ function CustomTableColumn<T>({
 
     setCurrentColumns(newData);
     saveColumns(newData);
-
-    // const sourceChapterId = result.draggableId;
-    // const destinationChapterId = currentColumns[result.destination.index].name;
-    // const sourceIndex = currentColumns.findIndex(
-    //   (chapter) => chapter.name === sourceChapterId
-    // );
-    // const destinationIndex = currentColumns.findIndex(
-    //   (chapter) => chapter.name === destinationChapterId
-    // );
-
-    // const newState = [...currentColumns];
-    // newState[sourceIndex] = currentColumns[destinationIndex];
-    // newState[destinationIndex] = currentColumns[sourceIndex];
-    // setCurrentColumns(newState);
   };
 
   const filterColumns = search
@@ -85,7 +71,7 @@ function CustomTableColumn<T>({
       <DropdownMenuTrigger asChild>
         <Button
           variant="default"
-          className="ml-auto mx-2 text-white opacity-30 hover:opacity-90"
+          className="ml-auto mx-2 opacity-30 hover:opacity-90"
         >
           Columns <ChevronDown className="ml-2 h-4 w-4" />
         </Button>

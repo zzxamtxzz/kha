@@ -3,7 +3,7 @@ import { createUser } from "../../../actions/user";
 
 export async function POST(request: NextRequest) {
   // const user = await getUser();
-  // if (user?.role !== ADMIN)
+  // if (!user.super_admin)
   //   return Response.json({ error: "user not found" }, { status: 404 });
 
   const body = await request.json();

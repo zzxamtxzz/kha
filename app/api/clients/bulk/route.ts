@@ -35,9 +35,9 @@ export async function POST(request: NextRequest) {
         const data = {
           ...client,
           email: client.email,
-          device_serial: client.device_serial,
-          account_number: client.account_number,
-          kit_number: client.kit_number,
+          snNo: client.snNo,
+          accNo: client.accNo,
+          kitNo: client.kitNo,
           fee: client.fee,
           remark: client.remark,
           client_id: response.id,

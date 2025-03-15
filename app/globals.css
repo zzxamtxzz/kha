@@ -5,7 +5,7 @@
 :root {
   --hover: #e3e5e8;
   --text: #1c2b33;
-  --cart: #ffffff;
+  --card: #ffffff;
   --back: #f2f4f7;
   --inactive-text: #868686;
   --active-color: #0b78be;
@@ -26,7 +26,6 @@
   --disable-nav-bg: #e4e6eb;
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
   --card-foreground: 240 10% 3.9%;
   --popover: 0 0% 100%;
   --popover-foreground: 240 10% 3.9%;
@@ -54,7 +53,7 @@
 [data-theme="dark"] {
   --hover: #3b3d3e;
   --text: #e4e6eb;
-  --cart: #242526;
+  --card: #242526;
   --back: #1c1c1d;
   --inactive-text: #b0b3b8;
   --active-bg-color: #253950;
@@ -121,7 +120,7 @@
 }
 
 .reactEasyCrop_Container {
-  background-color: var(--cart);
+  background-color: var(--card);
 }
 
 .gradient-background {
@@ -214,8 +213,8 @@ body {
   outline: none;
 }
 
-.cart-bg {
-  background-color: var(--cart);
+.card-bg {
+  background-color: var(--card);
   color: var(--text);
 }
 
@@ -452,4 +451,57 @@ input {
 
 textarea {
   background-color: transparent;
+}
+
+@layer base {
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }

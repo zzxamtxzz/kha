@@ -6,6 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import {
   Dispatch,
@@ -68,14 +69,12 @@ export function PopupProvider({ children }: { children: ReactNode }) {
         closeDialog,
       }}
     >
-      {children}
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent
-          className={cn("max-w-[700px] p-0", popup.className)}
-        >
+      <Dialog open={open} onOpenChange={setOpen}>
+        {children}
+        <DialogContent className={cn("w-[700px] p-0", popup.className)}>
           {popup.children}
-        </AlertDialogContent>
-      </AlertDialog>
+        </DialogContent>
+      </Dialog>
     </PopupContext.Provider>
   );
 }
@@ -83,7 +82,7 @@ export function PopupProvider({ children }: { children: ReactNode }) {
 export function usePopup() {
   const context = useContext(PopupContext);
   if (context === undefined) {
-    throw new Error("useUser must be used within a UserProvider");
+    throw new Error("usePopup must be used within a PopupProvider");
   }
   return context;
 }

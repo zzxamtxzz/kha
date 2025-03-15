@@ -18,7 +18,7 @@ function DeviceTrashItem({
   const { toast } = useToast();
 
   return (
-    <div className="cart-bg rounded-lg p-2">
+    <div className="card-bg rounded-lg p-2">
       <div className="flex items-center justify-between">
         <p className="font-semibold">
           {trash.client.name || trash.client.email}

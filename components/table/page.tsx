@@ -13,8 +13,8 @@ import { Checkbox } from "../ui/checkbox";
 import CustomTableColumn from "./columns";
 
 export type ColumnType<T> = {
-  name: string;
-  id: string;
+  name?: string;
+  id?: string;
   cell?: ({
     index,
     value,
@@ -26,7 +26,6 @@ export type TableType<T> = {
   columns?: ColumnType<T>[];
   lastElementRef: any;
   title: string;
-  skip?: (keyof T)[];
   className?: string;
   loading?: boolean;
   columnNames: string[];
@@ -37,14 +36,12 @@ function DynamicTable<T extends { id: string; name?: string }>({
   columns: ac = [],
   lastElementRef,
   title,
-  skip = [],
   columnNames,
   className,
   loading,
 }: TableType<T>) {
   const [checkedAll, setCheckedAll] = useState(false);
   const [checks, setChecks] = useState<string[]>([]);
-
   const [currentColumns, setCurrentColumns] = useState<ColumnType<T>[]>(ac);
 
   const { toast } = useToast();
@@ -56,17 +53,12 @@ function DynamicTable<T extends { id: string; name?: string }>({
   const queryKeys = queryCache
     .getAll()
     .map((query) => query.queryKey)
-    .filter((q) => q.includes(title) && !q.includes("count"));
+    .filter((q) => q.includes(title));
 
   return (
-    <div
-      className={cn(
-        "w-full h-full overflow-y-auto overflow-x-auto relative",
-        className
-      )}
-    >
+    <div className={cn("w-full h-full overflow-y-auto relative", className)}>
       {(checkedAll || checks.length > 0) && (
-        <div className="w-full cart-bg shadow p-2 flex items-center justify-between">
+        <div className="w-full card-bg shadow p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Button
               onClick={() => {
@@ -198,7 +190,7 @@ function DynamicTable<T extends { id: string; name?: string }>({
         </div>
       )}
       {loading && (
-        <SpinLoading className="h-20 center">{title} loading...</SpinLoading>
+        <SpinLoading className="h-20 center">loading {title}...</SpinLoading>
       )}
     </div>
   );

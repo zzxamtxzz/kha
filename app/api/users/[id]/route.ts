@@ -1,8 +1,25 @@
-import { saveupdateData } from "@/actions/update";
+import { saveUpdateData } from "@/actions/update";
 import { getUser } from "@/auth/user";
+import Role from "@/models/role";
 import User from "@/models/user";
-import { ADMIN } from "@/roles";
 import { NextRequest } from "next/server";
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const user = await getUser();
+  if (!user) return Response.json({ error: "user not found" }, { status: 404 });
+  const response = await User.findByPk(params.id, {
+    include: [
+      { model: User, as: "created_by", attributes: ["id", "name", "username"] },
+      { model: Role, as: "role" },
+    ],
+  });
+  if (!response)
+    return Response.json({ message: "User is not found" }, { status: 404 });
+  return Response.json(response);
+}
 
 export async function PUT(
   request: NextRequest,
@@ -11,7 +28,7 @@ export async function PUT(
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
 
-  if (ADMIN !== user.role)
+  if (!user.super_admin)
     return Response.json({ error: "not allow" }, { status: 401 });
 
   try {
@@ -22,7 +39,7 @@ export async function PUT(
 
     await user.update(body);
 
-    saveupdateData({
+    saveUpdateData({
       title: "User",
       content_id: user.id,
       fromModel: "users",

@@ -1,6 +1,7 @@
 import sequelize from "@/lib/mysql";
 import { generateSecureRandomId } from "@/lib/utils";
 import { DataTypes, Model } from "sequelize";
+import Device from "./devices";
 
 class DeviceEmail extends Model {}
 
@@ -24,5 +25,8 @@ DeviceEmail.init(
     timestamps: false,
   }
 );
+
+DeviceEmail.belongsTo(Device, { foreignKey: "device_id", as: "device" });
+Device.hasMany(DeviceEmail, { foreignKey: "device_id", as: "emails" });
 
 export default DeviceEmail;

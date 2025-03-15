@@ -1,61 +1,58 @@
-import { createUser } from "@/actions/user";
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
+import Device from "@/models/devices";
 import User from "@/models/user";
-import { actions, ADMIN, roles } from "@/roles";
 import { NextRequest } from "next/server";
 import { Op } from "sequelize";
 
 export async function GET(request: NextRequest) {
-  const user = await getUser();
-  if (!user) return Response.json({ error: "user not found" }, { status: 404 });
+  try {
+    const user = await getUser();
+    if (!user)
+      return Response.json({ error: "user not found" }, { status: 404 });
 
-  const foundRole = roles.find((r) => r.name === user.role);
-  if (ADMIN !== user.role && !foundRole?.devices.includes(actions.READ))
-    return Response.json({ error: "not allow" }, { status: 404 });
+    if (!user.super_admin && !user.role?.permissions?.devices?.includes("read"))
+      return Response.json({ error: "not allow" }, { status: 404 });
 
-  const params = request.nextUrl.searchParams;
-  const searchParams = Object.fromEntries(params);
-  const { search } = searchParams;
-  const page = parseInt(searchParams.page as string) || 1;
-  const size = parseInt(searchParams.size as string) || 10;
-  const start = (page - 1) * size;
+    const params = request.nextUrl.searchParams;
+    const searchParams = Object.fromEntries(params);
+    const { search } = searchParams;
+    const page = parseInt(searchParams.page as string) || 1;
+    const size = parseInt(searchParams.size as string) || 10;
+    const start = (page - 1) * size;
 
-  const where: any = { is_public: true };
+    const where: any = { is_public: true };
 
-  if (search) {
-    where[Op.or] = [
-      { name: { [Op.like]: `%${search}%` } },
-      { first_name: { [Op.like]: `%${search}%` } },
-      { last_name: { [Op.like]: `%${search}%` } },
-      { email: { [Op.like]: `%${search}%` } },
-    ];
-  }
+    if (search) {
+      where[Op.or] = [
+        { name: { [Op.like]: `%${search}%` } },
+        { email: { [Op.like]: `%${search}%` } },
+      ];
+    }
 
-  const { count, rows } = await Client.findAndCountAll({
-    where,
-    include: [
-      {
-        model: User,
-        as: "created_by",
-        attributes: ["id", "email", "name"],
-      },
-      // {
-      //   model: Device,
-      //   as: "devices",
-      //   attributes: [],
-      //   required: false,
+    const { count, rows } = await Client.findAndCountAll({
+      where,
+      include: [
+        {
+          model: User,
+          as: "created_by",
+          attributes: ["id", "email", "name"],
+        },
+        { model: Device, as: "devices", attributes: ["id"] },
+      ],
+      // attributes: {
+      //   include: [[fn("COUNT", col("devices.id")), "deviceCount"]],
       // },
-    ],
-    // attributes: {
-    //   include: [[fn("COUNT", col("devices.id")), "deviceCount"]],
-    // },
-    // group: ["Client.id"],
-    offset: start,
-    limit: size,
-    order: [["created_at", "DESC"]],
-  });
-  return Response.json({ data: rows, total: count });
+      // group: ["Client.id"],
+      offset: start,
+      limit: size,
+      order: [["created_at", "DESC"]],
+    });
+    return Response.json({ data: rows, total: count });
+  } catch (error: any) {
+    console.log("error", error);
+    return Response.json({ message: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -76,7 +73,7 @@ export async function POST(request: NextRequest) {
         include: {
           model: User,
           as: "created_by",
-          attributes: ["id", "email"],
+          attributes: ["id", "name", "username"],
         },
       });
       // Update the client's fields
@@ -88,13 +85,13 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // Create new client
-      client = await Client.create(body, {});
+      client = await Client.create({ ...body, created_by_id: user.id }, {});
     }
     const response = await Client.findByPk(client.id, {
       include: {
         model: User,
         as: "created_by",
-        attributes: ["id", "email"],
+        attributes: ["id", "name", "username"],
       },
     });
 

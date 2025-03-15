@@ -1,0 +1,8 @@
+/* styles.css */
+.background {
+  background-image: url("/home_b_hero_d.webp");
+  background-size: cover; /* Ensure the image covers the entire area */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  min-height: 100vh; /* Ensure the background covers the full height of the viewport */
+}

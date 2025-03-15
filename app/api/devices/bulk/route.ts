@@ -1,14 +1,13 @@
 import { getUser } from "@/auth/user";
 import Client from "@/models/client";
 import Device from "@/models/devices";
-import { ADMIN } from "@/roles";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
   if (!user) return Response.json({ error: "user not found" }, { status: 404 });
 
-  if (ADMIN !== user.role)
+  if (!user.super_admin)
     return Response.json({ error: "not allow" }, { status: 400 });
 
   const body = (await request.json()) as any[];
@@ -21,9 +20,9 @@ export async function POST(request: NextRequest) {
     return {
       ...i,
       email: i.email,
-      device_serial: i.device_serial,
-      account_number: i.account_number,
-      kit_number: i.kit_number,
+      snNo: i.snNo,
+      accNo: i.accNo,
+      kitNo: i.kitNo,
       fee: i.fee,
       remark: i.remark,
       client_id: i.client_id || client?.id,
@@ -70,9 +69,9 @@ export async function POST(request: NextRequest) {
 //     return {
 //       email: i.email,
 //       name: i.name,
-//       device_serial: i.device_serial,
-//       account_number: i.account_number,
-//       kit_number: i.kit_number,
+//       snNo: i.snNo,
+//       accNo: i.accNo,
+//       kitNo: i.kitNo,
 //       fee: i.fee,
 //       remark: i.remark,
 //       client_id: client?.id,

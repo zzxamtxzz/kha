@@ -42,8 +42,8 @@ TableColumn.init(
     modelName: "Column",
     tableName: "columns",
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    createdAt: "created_at",
+    updatedAt: "updated_at",
   }
 );
 
